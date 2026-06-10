@@ -75,7 +75,7 @@ def _prepare_page_data(
         for entry in arch.get("cards", []):
             card = catalog.get(entry["id"])
             if card is None:
-                fallback_name = next(missing_iter, entry["id"])
+                fallback_name = entry.get("name") or next(missing_iter, None) or entry["id"]
                 card = _fallback_card(entry["id"], fallback_name)
             cards_data.append({
                 "id": entry["id"],
@@ -491,6 +491,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     width: 60px; height: 80px; background: var(--panel); border: 2px solid rgba(255,255,255,0.2);
     object-fit: contain; display: flex; align-items: center; justify-content: center;
   }}
+  img.meta-card-thumb {{ cursor: zoom-in; }}
   .meta-card-name {{
     font-family: var(--mono); font-size: 10px; color: #ccc; line-height: 1.2; word-break: break-word;
     max-width: 70px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2;
@@ -1206,6 +1207,19 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   }}
   .agg-tooltip:hover .agg-tooltip-text {{ visibility: visible; opacity: 1; }}
 
+  #card-zoom-overlay {{
+    display: none; position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,0.85); align-items: center; justify-content: center;
+    cursor: zoom-out;
+  }}
+  #card-zoom-overlay.active {{ display: flex; }}
+  #card-zoom-overlay img {{
+    max-width: min(420px, 90vw); max-height: 90vh; object-fit: contain;
+    border-radius: 12px; box-shadow: 0 8px 48px rgba(0,0,0,0.8);
+    pointer-events: none;
+  }}
+  .card-img {{ cursor: zoom-in; }}
+
 </style>
 </head>
 <body>
@@ -1442,7 +1456,7 @@ function renderMeta() {{
     const cardGridHtml = fullDeck && fullDeck.cards && fullDeck.cards.length
       ? fullDeck.cards.map(c => `
           <div class="meta-card-item">
-            ${{c.img ? `<img src="${{c.img}}" alt="${{c.name}}" class="meta-card-thumb" onerror="this.style.display='none'">` : `<div class="meta-card-thumb" style="background:var(--panel)"></div>`}}
+            ${{c.img ? `<img src="${{c.img}}" alt="${{c.name}}" class="meta-card-thumb" onclick="openCardZoom(this.src,this.alt)" onerror="this.style.display='none'">` : `<div class="meta-card-thumb" style="background:var(--panel)"></div>`}}
             <div class="meta-card-name">${{c.name}}</div>
             <div class="meta-card-count">×${{c.need}}</div>
           </div>`).join('')
@@ -1543,6 +1557,7 @@ function renderCards(deck) {{
     const imgHtml = c.img
       ? `<img class="card-img" src="${{c.img}}"
              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+             onclick="openCardZoom(this.src,this.alt)"
              alt="${{c.name}}">
          <div class="card-img-fallback" style="display:none">${{sprite}}</div>`
       : `<div class="card-img-fallback">${{sprite}}</div>`;
@@ -2357,6 +2372,7 @@ function renderCatalogPage(reset) {{
     const imgHtml = c.img
       ? `<img class="card-img" src="${{c.img}}"
              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+             onclick="openCardZoom(this.src,this.alt)"
              alt="${{c.name}}">
          <div class="card-img-fallback" style="display:none">${{sprite}}</div>`
       : `<div class="card-img-fallback">${{sprite}}</div>`;
@@ -2497,7 +2513,24 @@ function bootSequence() {{
 
 updateTotal();
 bootSequence();
+
+function openCardZoom(src, name) {{
+  const overlay = document.getElementById('card-zoom-overlay');
+  const img = document.getElementById('card-zoom-img');
+  img.src = src;
+  img.alt = name || '';
+  overlay.classList.add('active');
+}}
+function closeCardZoom() {{
+  document.getElementById('card-zoom-overlay').classList.remove('active');
+}}
+document.addEventListener('keydown', e => {{ if (e.key === 'Escape') closeCardZoom(); }});
 </script>
+
+<div id="card-zoom-overlay" onclick="closeCardZoom()">
+  <img id="card-zoom-img" src="" alt="">
+</div>
+
 </body>
 </html>"""  # noqa: E501
 

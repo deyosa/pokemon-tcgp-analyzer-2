@@ -72,7 +72,7 @@ def _aggregate_decklist(decklists: list[dict]) -> list[dict]:
                 card_id = f"{set_id}-{number}"
                 count = int(entry.get("count", 1))
                 if card_id not in card_data:
-                    card_data[card_id] = {"total": 0, "appearances": 0}
+                    card_data[card_id] = {"total": 0, "appearances": 0, "name": entry.get("name", "")}
                 card_data[card_id]["total"] += count
                 card_data[card_id]["appearances"] += 1
     result = []
@@ -80,7 +80,7 @@ def _aggregate_decklist(decklists: list[dict]) -> list[dict]:
         if data["appearances"] >= max(1, n // 2):
             avg = round(data["total"] / data["appearances"])
             if avg > 0:
-                result.append({"id": card_id, "count": avg})
+                result.append({"id": card_id, "count": avg, "name": data.get("name", "")})
     # Sort by count descending; cap total copy count at 20
     sorted_result = sorted(result, key=lambda x: x["count"], reverse=True)
     capped, total = [], 0

@@ -93,3 +93,6 @@ def test_aggregate_decklist_basic():
     assert "A1-001" in ids
     assert "PROMO-A-005" in ids  # P-A is normalized to PROMO-A to match catalog
     assert all(c["count"] > 0 for c in result)
+    name_by_id = {c["id"]: c["name"] for c in result}
+    assert name_by_id["A1-001"] == "X"
+    assert name_by_id["PROMO-A-005"] == "Y"
