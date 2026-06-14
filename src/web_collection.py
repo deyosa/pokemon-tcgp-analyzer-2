@@ -709,6 +709,10 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .an-subtitle {{
     font-family: var(--pixel); font-size: 11px; color: var(--dim);
   }}
+  .an-desc {{
+    font-family: var(--mono); font-size: 11px; color: var(--dim);
+    margin-top: 10px; line-height: 1.7; max-width: 560px;
+  }}
 
   /* Scoreboard hero */
   .an-scoreboard {{
@@ -1920,6 +1924,7 @@ function anRenderRoot() {{
         </div>
         <div class="an-headline">Pick your fighter.<span class="pink"> We do the math.</span></div>
         <div class="an-subtitle">あなたの戦士を選べ・計算は任せろ</div>
+        <div class="an-desc">Select your deck and an opponent archetype to calculate your expected win rate and matchup breakdown · Based on Limitless TCG tournament data</div>
       </div>
       <div class="an-scoreboard">
         <div class="an-score-card-wrap">
