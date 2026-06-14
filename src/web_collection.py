@@ -326,6 +326,10 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     --shadow-hard:6px 6px 0 0 #0A0A0A;
     --bg-deep:   #F2E8D2;
   }}
+  body.dark {{
+    --bg: #1A1A1A; --panel: #242424; --card-bg: #2A2A2A;
+    --border: #E0D6C0; --text: #E0D6C0; --dim: #8A8480; --bg-deep: #141414;
+  }}
   * {{ box-sizing: border-box; margin: 0; padding: 0; border-radius: 0 !important; }}
   body {{
     background: var(--bg);
@@ -397,6 +401,12 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     box-shadow: var(--shadow); transition: box-shadow .07s, transform .07s;
   }}
   #kofi-btn:hover {{ box-shadow: none; transform: translate(4px,4px); }}
+  #dark-btn {{
+    background: var(--bg); border: 2px solid var(--border); color: var(--text);
+    font-family: var(--font); font-size: 15px; padding: 6px 10px; line-height: 1;
+    cursor: pointer; box-shadow: var(--shadow); transition: box-shadow .07s, transform .07s;
+  }}
+  #dark-btn:hover {{ box-shadow: none; transform: translate(4px,4px); }}
 
   /* ── Support modal ── */
   #support-modal {{
@@ -521,6 +531,13 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .wr-lo {{ color: var(--red); }}
 
   /* ── META tab — arch-card grid ── */
+  #meta-search-wrap {{ margin-bottom: 20px; }}
+  #meta-search-input {{
+    font-family: var(--mono); font-size: 12px; padding: 10px 16px;
+    border: 4px solid var(--border); background: var(--card-bg); color: var(--text);
+    width: 100%; max-width: 360px; outline: none; box-shadow: var(--shadow);
+  }}
+  #meta-search-input:focus {{ box-shadow: var(--shadow-lg); }}
   .meta-grid {{ display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }}
   .arch-card {{
     background: var(--card-bg); border: 4px solid var(--border);
@@ -587,6 +604,12 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .arch-stats {{ display: flex; align-items: flex-end; justify-content: space-between; }}
   .arch-share {{ font-family: var(--font); font-size: 28px; color: var(--pink); font-weight: 700; line-height: 1; }}
   .arch-wr {{ font-family: var(--pixel); font-size: 8px; color: var(--dim); text-align: right; line-height: 2.2; }}
+  .arch-card-hi {{ border-left: 8px solid var(--green) !important; }}
+  .arch-card-lo {{ border-left: 8px solid var(--red) !important; }}
+  .arch-owned-row {{ display: flex; align-items: center; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 2px solid var(--border); }}
+  .arch-owned-pct {{ font-family: var(--mono); font-size: 10px; color: var(--dim); }}
+  .arch-buildable-yes {{ font-family: var(--pixel); font-size: 8px; color: var(--green); }}
+  .arch-buildable-no {{ font-family: var(--pixel); font-size: 8px; color: var(--red); }}
 
   /* ── COLLECTION tab ── */
   #collection-pane {{
@@ -644,7 +667,21 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   }}
   #clear-deck-btn:hover {{ background: var(--red); color: #fff; box-shadow: none; transform: translate(4px,4px); }}
   #clear-deck-btn:disabled {{ opacity: .3; cursor: not-allowed; box-shadow: none; transform: none; }}
+  #share-deck-btn {{
+    background: transparent; border: 2px solid var(--blue); color: var(--blue);
+    font-family: var(--font); font-size: 9px; padding: 8px 12px;
+    cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    box-shadow: var(--shadow-sm); transition: box-shadow .07s, transform .07s;
+  }}
+  #share-deck-btn:hover {{ background: var(--blue); color: #fff; box-shadow: none; transform: translate(4px,4px); }}
+  #share-deck-btn:disabled {{ opacity: .3; cursor: not-allowed; box-shadow: none; transform: none; }}
   #card-grid {{ display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }}
+  #collection-empty {{
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 100%; gap: 16px; color: var(--dim);
+  }}
+  #collection-empty-icon {{ font-family: var(--font); font-size: 48px; animation: shoppu-wiggle 1s ease-in-out infinite; }}
+  #collection-empty-text {{ font-family: var(--mono); font-size: 12px; text-align: center; line-height: 2; letter-spacing: 1px; }}
 
   /* ── Card tile (Collection + Catalog shared) ── */
   .card {{
@@ -1445,6 +1482,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     </div>
     <div id="nav-right">
       <span id="total-label">♥ <span id="total-count">0</span></span>
+      <button id="dark-btn" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
       <button id="kofi-btn" onclick="toggleSupport()" title="Support the site">☕</button>
       <button id="save-btn" onclick="saveCollection()">SAVE</button>
     </div>
@@ -1488,6 +1526,9 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
           <br><span class="ps-updated" id="meta-updated" data-built="{built_at}">⏱ Updated ...</span>
         </div>
       </div>
+      <div id="meta-search-wrap">
+        <input id="meta-search-input" type="text" placeholder="SEARCH DECKS..." oninput="filterMeta()">
+      </div>
       <div class="meta-grid" id="meta-grid"></div>
     </div>
 
@@ -1498,11 +1539,16 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
         <button id="new-deck-btn" onclick="openNewDeck()">➕ NEW DECK</button>
       </div>
       <div id="card-area">
-        <div id="deck-title-row">
+        <div id="collection-empty">
+          <div id="collection-empty-icon">◄</div>
+          <div id="collection-empty-text">Select a deck from the list<br>to view its cards</div>
+        </div>
+        <div id="deck-title-row" style="display:none">
           <div id="deck-title">◄ SELECT A DECK ►</div>
           <button id="clear-deck-btn" onclick="clearDeck()" disabled>🗑 CLEAR</button>
+          <button id="share-deck-btn" onclick="shareDeck()" disabled>📋 COPY</button>
         </div>
-        <div id="card-grid"></div>
+        <div id="card-grid" style="display:none"></div>
       </div>
     </div>
 
@@ -1607,6 +1653,19 @@ const CAT_PAGE_SIZE = 60;
 const TYPE_SPRITE = {{ "Pokemon":"🎮","Trainer":"🃏","Energy":"⚡" }};
 const TYPE_COLOR  = {{ "Pokemon":"type-Pokemon","Trainer":"type-Trainer","Energy":"type-Energy" }};
 
+function toggleDark() {{
+  const isDark = document.body.classList.toggle('dark');
+  document.getElementById('dark-btn').textContent = isDark ? '☀' : '🌙';
+  localStorage.setItem('darkMode', isDark ? '1' : '0');
+}}
+if (localStorage.getItem('darkMode') === '1') {{
+  document.body.classList.add('dark');
+  document.addEventListener('DOMContentLoaded', () => {{
+    const btn = document.getElementById('dark-btn');
+    if (btn) btn.textContent = '☀';
+  }});
+}}
+
 // ── Tab system ──────────────────────────────────────────────────────────────
 function initUpdatedLabel() {{
   const el = document.getElementById('meta-updated');
@@ -1659,9 +1718,24 @@ function renderMeta() {{
           </div>`).join('')
       : '';
     
+    let ownedPct = 0;
+    if (fullDeck && fullDeck.cards && fullDeck.cards.length) {{
+      let have = 0, need = 0;
+      for (const c of fullDeck.cards) {{
+        need += c.need;
+        have += Math.min(collection[c.id] || 0, c.need);
+      }}
+      ownedPct = need === 0 ? 100 : Math.round(100 * have / need);
+    }}
+    const buildable = ownedPct >= 100;
+    const ownedHtml = `<div class="arch-owned-row">
+  <span class="arch-owned-pct">${{ownedPct}}% OWNED</span>
+  <span class="${{buildable ? 'arch-buildable-yes' : 'arch-buildable-no'}}">${{buildable ? '✓ BUILD' : '✗ BUILD'}}</span>
+</div>`;
     const areaCls = imgs.length === 1 ? 'arch-img-area single' : 'arch-img-area';
     const div = document.createElement('div');
-    div.className = 'arch-card';
+    const cardCls = arch.ewr >= 52 ? 'arch-card arch-card-hi' : arch.ewr < 48 ? 'arch-card arch-card-lo' : 'arch-card';
+    div.className = cardCls;
     div.innerHTML = `
       <div class="${{areaCls}}">
         <div class="arch-sticker">#${{i + 1}}</div>
@@ -1676,12 +1750,23 @@ function renderMeta() {{
             E[WR] <span class="${{ewrCls}}">${{arch.ewr}}%</span>
           </div>
         </div>
+        ${{ownedHtml}}
       </div>
       <div class="arch-hover-overlay">
         <div class="arch-hover-title">${{arch.name}}</div>
         <div class="arch-hover-cards">${{cardGridHtml}}</div>
       </div>`;
     grid.appendChild(div);
+  }});
+}}
+
+function filterMeta() {{
+  const q = (document.getElementById('meta-search-input').value || '').toLowerCase();
+  const grid = document.getElementById('meta-grid');
+  grid.querySelectorAll('.arch-card').forEach(card => {{
+    const name = card.querySelector('.arch-name');
+    if (!name) return;
+    card.style.display = (!q || name.textContent.toLowerCase().includes(q)) ? '' : 'none';
   }});
 }}
 
@@ -1727,6 +1812,10 @@ function selectDeck(idx) {{
   renderDeckList();
   renderCards(ARCHETYPES[idx]);
   document.getElementById('clear-deck-btn').disabled = false;
+  document.getElementById('collection-empty').style.display = 'none';
+  document.getElementById('deck-title-row').style.display = '';
+  document.getElementById('card-grid').style.display = '';
+  document.getElementById('share-deck-btn').disabled = false;
 }}
 
 function clearDeck() {{
@@ -1737,6 +1826,19 @@ function clearDeck() {{
   renderDeckList();
   updateTotal();
   setStatus('DECK CLEARED — PRESS 💾 SAVE TO PERSIST', '');
+}}
+
+function shareDeck() {{
+  if (activeDeckIdx < 0) return;
+  const deck = ARCHETYPES[activeDeckIdx];
+  const lines = [`${{deck.name.toUpperCase()}} — Pokemon TCG Pocket Deck`, ''];
+  deck.cards.forEach(c => lines.push(`${{c.need}}x ${{c.name}}`));
+  lines.push('', 'Built with pocket-meta.online');
+  navigator.clipboard.writeText(lines.join('\n')).then(() => {{
+    const btn = document.getElementById('share-deck-btn');
+    btn.textContent = '✓ COPIED!';
+    setTimeout(() => {{ btn.textContent = '📋 COPY'; }}, 2000);
+  }});
 }}
 
 function renderCards(deck) {{
@@ -2573,6 +2675,7 @@ function renderCatalogPage(reset) {{
     const safe    = c.id.replace(/[^a-z0-9]/gi, '_');
     const div = document.createElement('div');
     div.className = `card cat-card ${{cls}}`;
+    div.title = owned === 0 ? 'You own 0 copies' : `You own ${{owned}} cop${{owned === 1 ? 'y' : 'ies'}}`;
     div.id = `cat-card-${{safe}}`;
     const imgHtml = c.img
       ? `<img class="card-img" src="${{c.img}}"
