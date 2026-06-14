@@ -1660,10 +1660,8 @@ function toggleDark() {{
 }}
 if (localStorage.getItem('darkMode') === '1') {{
   document.body.classList.add('dark');
-  document.addEventListener('DOMContentLoaded', () => {{
-    const btn = document.getElementById('dark-btn');
-    if (btn) btn.textContent = '☀';
-  }});
+  const _darkBtn = document.getElementById('dark-btn');
+  if (_darkBtn) _darkBtn.textContent = '☀';
 }}
 
 // ── Tab system ──────────────────────────────────────────────────────────────
@@ -1758,6 +1756,7 @@ function renderMeta() {{
       </div>`;
     grid.appendChild(div);
   }});
+  filterMeta();
 }}
 
 function filterMeta() {{
@@ -1782,9 +1781,10 @@ function deckCompletion(deck) {{
 
 function renderDeckList() {{
   const el = document.getElementById('deck-list');
-  // Keep the + NEW DECK button at the bottom
   const newBtn = document.getElementById('new-deck-btn');
+  const hint = document.getElementById('deck-list-hint');
   el.innerHTML = '';
+  if (hint) el.appendChild(hint);
   ARCHETYPES.forEach((deck, i) => {{
     const pct = deckCompletion(deck);
     const barClass = pct >= 80 ? '' : pct >= 40 ? 'mid' : 'low';
