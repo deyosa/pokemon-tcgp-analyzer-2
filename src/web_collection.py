@@ -602,6 +602,10 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     overflow-y: auto; padding: 14px 12px 40px;
     background: var(--panel);
   }}
+  #deck-list-hint {{
+    font-family: var(--mono); font-size: 9px; color: var(--dim);
+    padding: 4px 4px 10px; line-height: 1.6; letter-spacing: 0.5px;
+  }}
   #deck-list::-webkit-scrollbar {{ width: 6px; }}
   #deck-list::-webkit-scrollbar-thumb {{ background: var(--dim); }}
   .deck-item {{
@@ -1485,12 +1489,8 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
 
     <!-- COLLECTION -->
     <div class="tab-pane" id="collection-pane">
-      <div class="page-header">
-        <h1>COLLECTION</h1>
-        <div class="page-header-jp">コレクション・デッキビルダー</div>
-        <div class="page-subtitle">Track your owned cards and build decks · Press SAVE to persist changes</div>
-      </div>
       <div id="deck-list">
+        <div id="deck-list-hint">Track owned cards · Build decks · Press SAVE to persist</div>
         <button id="new-deck-btn" onclick="openNewDeck()">➕ NEW DECK</button>
       </div>
       <div id="card-area">
