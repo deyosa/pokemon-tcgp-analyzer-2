@@ -23,7 +23,7 @@ from src.visualizations import (  # noqa: E402
     plot_matchup_heatmap, plot_wr_comparison, plot_role_attribution,
 )
 from src.web_collection import (  # noqa: E402
-    create_flask_app, _prepare_page_data, _get_db_path, _load_collection,
+    create_flask_app, _prepare_page_data, _get_db_path,
 )
 
 _OUTPUTS_DIR = Path(__file__).parent / "outputs"
@@ -114,10 +114,8 @@ def _make_reload_fn(catalog: dict, db_path: Path) -> object:
             _run_analysis(catalog, new_archetypes, new_matchup_matrix, new_meta_decks)
         _generate_charts(new_archetypes, new_matchup_matrix, new_predicted_wrs, new_attributions)
 
-        my_cards = _load_collection(db_path)
-
         page_data = _prepare_page_data(
-            new_archetypes, catalog, my_cards,
+            new_archetypes, catalog, {},
             new_ewrs, new_attributions, new_meta_decks,
             matchup_matrix=new_matchup_matrix,
             role_map=new_role_map,

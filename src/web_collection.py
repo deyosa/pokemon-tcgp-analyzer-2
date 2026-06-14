@@ -5,7 +5,7 @@ import sqlite3
 import threading
 from datetime import datetime, timezone
 from pathlib import Path
-from flask import Flask, Response, abort, jsonify, request, send_from_directory
+from flask import Flask, Response, abort, jsonify, send_from_directory
 from src.models import Card, Collection
 _CDN = "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket"
 # Catalog set codes that differ from the CDN's set codes
@@ -295,7 +295,6 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     catalog_json = json.dumps(page_data.get("catalog", []))
     matchup_json = json.dumps(page_data.get("matchup", {}))
     regression_json = json.dumps(page_data.get("regression", {}))
-    collection_json = json.dumps(my_cards)
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -1639,10 +1638,31 @@ let   ANALYSIS_DATA = {analysis_json};
 const CATALOG_DATA  = {catalog_json};
 let   MATCHUP_DATA  = {matchup_json};
 let   REGRESSION    = {regression_json};
-let   collection    = {collection_json};
+let   collection    = JSON.parse(localStorage.getItem('pkmn_collection') || '{{}}');
 let   activeDeckIdx = -1;
 let   activeTab     = 'meta';
 let   aggregateByName = (localStorage.getItem('aggByName') === '1');
+
+// Load custom decks from localStorage and merge into ARCHETYPES
+(function() {{
+  const saved = JSON.parse(localStorage.getItem('pkmn_custom_decks') || '[]');
+  saved.forEach(cdeck => {{
+    ARCHETYPES.push({{
+      id: cdeck.id, name: cdeck.name,
+      meta_share: 0, win_rate: 0, custom: true,
+      cards: cdeck.cards.map(c => {{
+        const cat = CATALOG_DATA.find(x => x.id === c.id);
+        return {{
+          id: c.id,
+          name: cat ? cat.name : c.name || c.id,
+          type: cat ? cat.type : 'Pokemon',
+          need: c.count, have: collection[c.id] || 0,
+          img: cat ? cat.img : '',
+        }};
+      }}),
+    }});
+  }});
+}})();
 
 // Catalog state
 let catFiltered = [];
@@ -2532,89 +2552,60 @@ function setNdErr(msg) {{
   document.getElementById('nd-err').textContent = msg;
 }}
 
-async function saveDraft() {{
+function _persistCustomDecks() {{
+  const customDecks = ARCHETYPES.filter(d => d.custom).map(d => ({{
+    id: d.id, name: d.name,
+    cards: d.cards.map(c => ({{ id: c.id, count: c.need }})),
+  }}));
+  localStorage.setItem('pkmn_custom_decks', JSON.stringify(customDecks));
+}}
+
+function saveDraft() {{
   const name = document.getElementById('nd-name').value.trim();
   if (!name) {{ setNdErr('ENTER A DECK NAME'); return; }}
   if (!draftDeck.cards.length) {{ setNdErr('ADD AT LEAST ONE CARD'); return; }}
   const total = draftDeck.cards.reduce((s,c) => s+c.count, 0);
   if (total > 20) {{ setNdErr('TOO MANY CARDS (MAX 20)'); return; }}
 
-  const newDeck = {{
-    id: 'custom-' + Date.now(),
-    name,
-    meta_share: 0, win_rate: 0, custom: true,
-    cards: draftDeck.cards.map(c => ({{ id: c.id, count: c.count }})),
-  }};
-
-  // Add to ARCHETYPES in memory
   ARCHETYPES.push({{
-    ...newDeck,
+    id: 'custom-' + Date.now(), name,
+    meta_share: 0, win_rate: 0, custom: true,
     cards: draftDeck.cards.map(c => ({{
       id: c.id, name: c.name, type: c.type,
       need: c.count, have: collection[c.id] || 0, img: c.img,
     }})),
   }});
+  _persistCustomDecks();
 
-  // Persist all custom decks
-  const customDecks = ARCHETYPES.filter(d => d.custom).map(d => ({{
-    id: d.id, name: d.name,
-    cards: d.cards.map(c => ({{ id: c.id, count: c.need }})),
-  }}));
-  try {{
-    await fetch('/save-decks', {{
-      method: 'POST',
-      headers: {{'Content-Type':'application/json'}},
-      body: JSON.stringify(customDecks),
-    }});
-  }} catch(e) {{}}
-
-  // Auto-sync collection: bump owned count up to at least what the deck needs
+  // Auto-sync collection up to deck needs
   let collectionChanged = false;
   for (const c of draftDeck.cards) {{
-    const needed = c.count;
-    if ((collection[c.id] || 0) < needed) {{
-      collection[c.id] = needed;
+    if ((collection[c.id] || 0) < c.count) {{
+      collection[c.id] = c.count;
       collectionChanged = true;
     }}
   }}
-  if (collectionChanged) {{
-    try {{
-      await fetch('/save', {{
-        method: 'POST',
-        headers: {{'Content-Type':'application/json'}},
-        body: JSON.stringify(collection),
-      }});
-    }} catch(e) {{}}
-  }}
+  if (collectionChanged) localStorage.setItem('pkmn_collection', JSON.stringify(collection));
 
   closeNewDeck();
   renderDeckList();
   setStatus(collectionChanged ? '✔ DECK SAVED — COLLECTION UPDATED AUTOMATICALLY!' : '✔ DECK SAVED!', 'ok');
 }}
 
-async function deleteCustomDeck(deckId) {{
+function deleteCustomDeck(deckId) {{
   const idx = ARCHETYPES.findIndex(d => d.id === deckId);
   if (idx < 0) return;
   ARCHETYPES.splice(idx, 1);
   if (activeDeckIdx === idx) {{
     activeDeckIdx = -1;
-    document.getElementById('deck-title').textContent = '◄ SELECT A DECK ►';
-    document.getElementById('card-grid').innerHTML = '';
+    document.getElementById('collection-empty').style.display = '';
+    document.getElementById('deck-title-row').style.display = 'none';
+    document.getElementById('card-grid').style.display = 'none';
     document.getElementById('clear-deck-btn').disabled = true;
   }} else if (activeDeckIdx > idx) {{
     activeDeckIdx--;
   }}
-  const customDecks = ARCHETYPES.filter(d => d.custom).map(d => ({{
-    id: d.id, name: d.name,
-    cards: d.cards.map(c => ({{ id: c.id, count: c.need }})),
-  }}));
-  try {{
-    await fetch('/save-decks', {{
-      method: 'POST',
-      headers: {{'Content-Type':'application/json'}},
-      body: JSON.stringify(customDecks),
-    }});
-  }} catch(e) {{}}
+  _persistCustomDecks();
   renderDeckList();
   setStatus('DECK DELETED', '');
 }}
@@ -2736,23 +2727,17 @@ function adjustCat(cardId, delta) {{
 }}
 
 // ── Save ─────────────────────────────────────────────────────────────────────
-async function saveCollection() {{
+function saveCollection() {{
   const btn = document.getElementById('save-btn');
   btn.textContent = 'SAVING...';
   try {{
-    const resp = await fetch('/save', {{
-      method: 'POST',
-      headers: {{'Content-Type':'application/json'}},
-      body: JSON.stringify(collection),
-    }});
-    if (resp.ok) {{
-      setStatus('✔ COLLECTION SAVED!', 'ok');
-      btn.textContent = '✔ SAVED!';
-      setTimeout(() => {{ btn.textContent = 'SAVE'; }}, 2000);
-      if (activeTab === 'analysis') renderAnalysis();
-    }} else throw new Error();
+    localStorage.setItem('pkmn_collection', JSON.stringify(collection));
+    setStatus('✔ COLLECTION SAVED!', 'ok');
+    btn.textContent = '✔ SAVED!';
+    setTimeout(() => {{ btn.textContent = 'SAVE'; }}, 2000);
+    if (activeTab === 'analysis') renderAnalysis();
   }} catch(e) {{
-    setStatus('✘ SAVE FAILED — IS THE SERVER RUNNING?', 'err');
+    setStatus('✘ SAVE FAILED', 'err');
     btn.textContent = 'SAVE';
   }}
 }}
@@ -3000,17 +2985,15 @@ def create_flask_app(
         if _state["html"] is None:
             with _lock:
                 if _state["html"] is None:
-                    my_cards = _load_collection(db_path)
-                    custom_decks = _load_custom_decks(db_path)
                     page_data = _prepare_page_data(
-                        _state["archetypes"], catalog, my_cards,
+                        _state["archetypes"], catalog, {},
                         _state["ewrs"], _state["attributions"], _state["meta_decks"],
-                        custom_decks=custom_decks,
+                        custom_decks=[],
                         matchup_matrix=_state["matchup_matrix"],
                         role_map=_state["role_map"],
                         regression=_state["regression"],
                     )
-                    _state["html"] = _build_html(page_data, my_cards)
+                    _state["html"] = _build_html(page_data, {})
         return _state["html"]
 
     app = Flask(__name__)
@@ -3029,26 +3012,6 @@ def create_flask_app(
             abort(404)
         return send_from_directory(str(outputs_dir), filename)
 
-    @app.post("/save")
-    def save():
-        data = request.get_json(force=True, silent=True)
-        if not isinstance(data, dict):
-            abort(400)
-        _save_collection(db_path, data)
-        with _lock:
-            _state["html"] = None
-        return "OK"
-
-    @app.post("/save-decks")
-    def save_decks():
-        data = request.get_json(force=True, silent=True)
-        if not isinstance(data, list):
-            abort(400)
-        _save_custom_decks(db_path, data)
-        with _lock:
-            _state["html"] = None
-        return "OK"
-
     @app.post("/refresh")
     def refresh():
         if reload_fn is None:
@@ -3064,8 +3027,7 @@ def create_flask_app(
                 state_updates = {}
 
             # Build new HTML before touching _state — visitors keep getting old page
-            my_cards = _load_collection(db_path)
-            new_html = _build_html(page_data, my_cards)
+            new_html = _build_html(page_data, {})
 
             # Atomically swap in new state + pre-built HTML
             with _lock:
