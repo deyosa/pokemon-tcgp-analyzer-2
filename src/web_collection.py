@@ -3,6 +3,7 @@ import json
 import os
 import sqlite3
 import threading
+from datetime import datetime, timezone
 from pathlib import Path
 from flask import Flask, Response, abort, jsonify, request, send_from_directory
 from src.models import Card, Collection
@@ -287,6 +288,7 @@ def _prepare_page_data(
 
 def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     """Return a fully self-contained retro HTML page as a string."""
+    built_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     decks_json = json.dumps(page_data["decks"])
     meta_json = json.dumps(page_data["meta"])
     analysis_json = json.dumps(page_data["analysis"])
@@ -497,6 +499,15 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   }}
   .page-header-jp {{
     font-family: var(--pixel); font-size: 11px; color: var(--pink); margin-top: 10px;
+  }}
+  .page-subtitle {{
+    font-family: var(--mono); font-size: 12px; color: var(--dim);
+    margin-top: 12px; line-height: 1.6;
+  }}
+  .page-subtitle .ps-updated {{
+    display: inline-block; margin-top: 6px; font-size: 10px;
+    background: var(--panel); border: 1px solid var(--border);
+    padding: 2px 8px; color: var(--dim);
   }}
 
   /* ── Section label ── */
@@ -1464,12 +1475,21 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
       <div class="page-header">
         <h1>META</h1>
         <div class="page-header-jp">メタアーキタイプ ランキング</div>
+        <div class="page-subtitle">
+          Top archetypes ranked by expected win rate · Data from Limitless TCG
+          <br><span class="ps-updated" id="meta-updated" data-built="{built_at}">⏱ Updated ...</span>
+        </div>
       </div>
       <div class="meta-grid" id="meta-grid"></div>
     </div>
 
     <!-- COLLECTION -->
     <div class="tab-pane" id="collection-pane">
+      <div class="page-header">
+        <h1>COLLECTION</h1>
+        <div class="page-header-jp">コレクション・デッキビルダー</div>
+        <div class="page-subtitle">Track your owned cards and build decks · Press SAVE to persist changes</div>
+      </div>
       <div id="deck-list">
         <button id="new-deck-btn" onclick="openNewDeck()">➕ NEW DECK</button>
       </div>
@@ -1487,6 +1507,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
       <div class="page-header">
         <h1>CATALOG</h1>
         <div class="page-header-jp">全カードブラウザー</div>
+        <div class="page-subtitle">Browse all Pokemon TCG Pocket cards · Mark owned copies to update your collection</div>
       </div>
       <div id="catalog-filters">
         <input id="cat-search" type="text" placeholder="SEARCH BY NAME..."
@@ -1583,6 +1604,16 @@ const TYPE_SPRITE = {{ "Pokemon":"🎮","Trainer":"🃏","Energy":"⚡" }};
 const TYPE_COLOR  = {{ "Pokemon":"type-Pokemon","Trainer":"type-Trainer","Energy":"type-Energy" }};
 
 // ── Tab system ──────────────────────────────────────────────────────────────
+function initUpdatedLabel() {{
+  const el = document.getElementById('meta-updated');
+  if (!el) return;
+  const built = new Date(el.dataset.built);
+  const mins = Math.round((Date.now() - built) / 60000);
+  if (mins < 60)       el.textContent = `⏱ Updated ${{mins}}m ago`;
+  else if (mins < 1440) el.textContent = `⏱ Updated ${{Math.floor(mins/60)}}h ago`;
+  else                  el.textContent = `⏱ Updated ${{Math.floor(mins/1440)}}d ago`;
+}}
+
 function showTab(name) {{
   document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -2647,6 +2678,7 @@ function bootSequence() {{
         document.getElementById('boot').style.display = 'none';
         document.getElementById('main-ui').style.display = 'flex';
         renderMeta();
+        initUpdatedLabel();
         setStatus('SELECT A TAB TO EXPLORE', '');
       }}, 300);
     }}
