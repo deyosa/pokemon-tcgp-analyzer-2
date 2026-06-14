@@ -2694,7 +2694,7 @@ document.addEventListener('click', function(e) {{
 <div id="support-modal">
   <button id="support-close" onclick="toggleSupport()">✕</button>
   <h3>SUPPORT THE SITE</h3>
-  <a class="support-link" href="https://ko-fi.com/YOUR_KOFI_USERNAME" target="_blank" rel="noopener">
+  <a class="support-link" href="https://ko-fi.com/deyosa" target="_blank" rel="noopener">
     <span class="sl-icon">☕</span>
     <span class="sl-text">
       <span class="sl-title">BUY ME A COFFEE</span>
