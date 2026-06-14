@@ -2891,6 +2891,7 @@ def create_flask_app(
         "html":           None,   # None = needs rebuild
     }
     _lock = threading.Lock()
+    _refresh_lock = threading.Lock()  # prevents concurrent refreshes overlapping
 
     def _get_html() -> str:
         if _state["html"] is None:
@@ -2949,20 +2950,29 @@ def create_flask_app(
     def refresh():
         if reload_fn is None:
             return jsonify({"error": "reload not configured"}), 501
+        if not _refresh_lock.acquire(blocking=False):
+            return jsonify({"error": "refresh already in progress"}), 429
         try:
             result = reload_fn()
-            # reload_fn returns (page_data, state_updates) or just page_data
             if isinstance(result, tuple):
                 page_data, state_updates = result
-                with _lock:
-                    _state.update(state_updates)
-                    _state["html"] = None
             else:
                 page_data = result
-                with _lock:
-                    _state["html"] = None
+                state_updates = {}
+
+            # Build new HTML before touching _state — visitors keep getting old page
+            my_cards = _load_collection(db_path)
+            new_html = _build_html(page_data, my_cards)
+
+            # Atomically swap in new state + pre-built HTML
+            with _lock:
+                _state.update(state_updates)
+                _state["html"] = new_html
+
             return jsonify(page_data)
         except Exception as exc:
             return jsonify({"error": str(exc)}), 500
+        finally:
+            _refresh_lock.release()
 
     return app
