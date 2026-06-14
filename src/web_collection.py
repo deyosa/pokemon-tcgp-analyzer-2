@@ -589,11 +589,11 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     width: 100%;
   }}
   .arch-sticker {{
-    position: absolute; top: 10px; left: 10px;
+    display: inline-block;
     background: var(--gold); border: 2px solid var(--border);
     font-family: var(--pixel); font-size: 7px; color: var(--text);
     padding: 4px 8px; box-shadow: 2px 2px 0 0 var(--border);
-    transform: rotate(-3deg);
+    margin-bottom: 8px;
   }}
   .arch-body {{ padding: 16px; }}
   .arch-name {{
@@ -1738,10 +1738,10 @@ function renderMeta() {{
     div.className = cardCls;
     div.innerHTML = `
       <div class="${{areaCls}}">
-        <div class="arch-sticker">#${{i + 1}}</div>
         ${{imgHtml}}
       </div>
       <div class="arch-body">
+        <div class="arch-sticker">#${{i + 1}}</div>
         <div class="arch-name">${{arch.name.toUpperCase()}}</div>
         <div class="arch-stats">
           <div class="arch-share">${{arch.meta_share}}%</div>
