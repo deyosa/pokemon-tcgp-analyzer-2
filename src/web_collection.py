@@ -464,6 +464,10 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     transition: background .1s;
   }}
   .sb-link:hover {{ background: rgba(255,255,255,.2); }}
+  .sb-link.sb-dark {{
+    background: #0A0A0A; border-color: #0A0A0A; color: #fff;
+  }}
+  .sb-link.sb-dark:hover {{ background: #222; }}
   @media (max-width: 480px) {{
     #support-banner {{ font-size: 10px; padding: 5px 12px; gap: 10px; flex-wrap: wrap; justify-content: center; }}
   }}
@@ -1460,7 +1464,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   <div id="support-banner">
     <span>☕ Enjoying this free tool?</span>
     <a class="sb-link" href="https://ko-fi.com/deyosa" target="_blank" rel="noopener">DONATE ON KO-FI</a>
-    <a class="sb-link" href="https://www.amazon.com/s?k=pokemon+tcg+pocket+booster+pack&tag=pocketmeta00-20" target="_blank" rel="noopener sponsored">SHOP CARDS</a>
+    <a class="sb-link sb-dark" href="https://www.amazon.com/s?k=pokemon+tcg+pocket+booster+pack&tag=pocketmeta00-20" target="_blank" rel="noopener sponsored">🛒 BUY POKEMON CARDS</a>
   </div>
 
   <div id="content">
