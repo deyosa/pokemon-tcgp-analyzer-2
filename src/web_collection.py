@@ -396,6 +396,45 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     box-shadow: var(--shadow); transition: box-shadow .07s, transform .07s;
   }}
   #save-btn:hover {{ box-shadow: none; transform: translate(4px,4px); }}
+  #kofi-btn {{
+    background: #FF5E5B; border: 2px solid var(--border); color: #fff;
+    font-family: var(--font); font-size: 13px; padding: 8px 12px;
+    cursor: pointer; white-space: nowrap; line-height: 1;
+    box-shadow: var(--shadow); transition: box-shadow .07s, transform .07s;
+  }}
+  #kofi-btn:hover {{ box-shadow: none; transform: translate(4px,4px); }}
+
+  /* ── Support modal ── */
+  #support-modal {{
+    display: none; position: fixed; top: 70px; right: 20px; z-index: 500;
+    background: var(--bg); border: 4px solid var(--border);
+    box-shadow: 6px 6px 0 0 #0A0A0A; padding: 20px 20px 16px; min-width: 270px;
+  }}
+  #support-modal h3 {{
+    font-family: var(--font); font-size: 12px; letter-spacing: 2px;
+    color: var(--text); margin: 0 0 12px 0;
+    border-bottom: 2px solid var(--border); padding-bottom: 8px;
+  }}
+  .support-link {{
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin-bottom: 8px;
+    border: 2px solid var(--border); text-decoration: none; color: var(--text);
+    font-family: var(--font); font-size: 11px; letter-spacing: 1px;
+    box-shadow: 3px 3px 0 0 #0A0A0A; transition: box-shadow .07s, transform .07s;
+  }}
+  .support-link:last-child {{ margin-bottom: 0; }}
+  .support-link:hover {{ box-shadow: none; transform: translate(3px,3px); color: var(--text); }}
+  .support-link .sl-icon {{ font-size: 22px; flex-shrink: 0; }}
+  .support-link .sl-text {{ display: flex; flex-direction: column; gap: 2px; }}
+  .support-link .sl-title {{ font-weight: 700; }}
+  .support-link .sl-sub {{ font-family: var(--mono); font-size: 9px; color: var(--dim); }}
+  #support-close {{
+    position: absolute; top: 6px; right: 8px; background: none; border: none;
+    color: var(--dim); font-size: 16px; cursor: pointer; padding: 4px; line-height: 1;
+  }}
+  #support-close:hover {{ color: var(--text); }}
+  @media (max-width: 480px) {{
+    #support-modal {{ right: 8px; left: 8px; min-width: unset; top: 60px; }}
+  }}
 
   /* ── Marquee strip ── */
   #marquee-strip {{
@@ -1374,6 +1413,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     <div id="nav-right">
       <span id="total-label">♥ <span id="total-count">0</span></span>
       <button id="refresh-btn" onclick="refreshData()" title="Refresh tournament data">⟳</button>
+      <button id="kofi-btn" onclick="toggleSupport()" title="Support the site">☕</button>
       <button id="save-btn" onclick="saveCollection()">SAVE</button>
     </div>
   </nav>
@@ -2635,7 +2675,40 @@ function closeCardZoom() {{
   document.getElementById('card-zoom-overlay').classList.remove('active');
 }}
 document.addEventListener('keydown', e => {{ if (e.key === 'Escape') closeCardZoom(); }});
+
+// ── Support modal ────────────────────────────────────────────────────────────
+function toggleSupport() {{
+  const modal = document.getElementById('support-modal');
+  modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+}}
+document.addEventListener('click', function(e) {{
+  const modal = document.getElementById('support-modal');
+  const btn = document.getElementById('kofi-btn');
+  if (modal && modal.style.display === 'block' && !modal.contains(e.target) && e.target !== btn) {{
+    modal.style.display = 'none';
+  }}
+}});
 </script>
+
+<!-- Support modal -->
+<div id="support-modal">
+  <button id="support-close" onclick="toggleSupport()">✕</button>
+  <h3>SUPPORT THE SITE</h3>
+  <a class="support-link" href="https://ko-fi.com/YOUR_KOFI_USERNAME" target="_blank" rel="noopener">
+    <span class="sl-icon">☕</span>
+    <span class="sl-text">
+      <span class="sl-title">BUY ME A COFFEE</span>
+      <span class="sl-sub">One-time donation · Ko-fi</span>
+    </span>
+  </a>
+  <a class="support-link" href="https://www.amazon.com/s?k=pokemon+tcg+pocket+booster+pack&tag=YOUR_AMAZON_TAG" target="_blank" rel="noopener sponsored">
+    <span class="sl-icon">🛒</span>
+    <span class="sl-text">
+      <span class="sl-title">SHOP POKEMON CARDS</span>
+      <span class="sl-sub">Amazon · affiliate link</span>
+    </span>
+  </a>
+</div>
 
 <div id="card-zoom-overlay" onclick="closeCardZoom()">
   <img id="card-zoom-img" src="" alt="">
