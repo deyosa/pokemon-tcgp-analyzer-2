@@ -1260,7 +1260,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     /* Collection — stack vertically */
     #collection-pane {{ grid-template-columns: 1fr; grid-template-rows: 260px 1fr; }}
     #deck-list {{ border-right: none; border-bottom: 4px solid var(--border); overflow-y: auto; padding: 10px 8px 16px; }}
-    #card-area {{ padding: 16px 12px; }}
+    #card-area {{ padding: 16px 12px 80px; }}
     #card-grid {{ grid-template-columns: repeat(2, 1fr); gap: 10px; }}
 
     /* Analysis header */
@@ -1685,6 +1685,13 @@ function adjust(cardId, need, delta) {{
   if (el) el.textContent = next;
   const cardEl = document.getElementById('card-' + safe);
   if (cardEl) cardEl.className = 'card ' + (next >= need ? 'owned' : next > 0 ? 'partial' : 'missing');
+  // Sync to catalog tab if it's showing this card
+  const catCnt = document.getElementById('cat-cnt-' + safe);
+  if (catCnt) catCnt.textContent = next;
+  const catBadge = document.getElementById('cat-badge-' + safe);
+  if (catBadge) catBadge.style.display = next >= 1 ? '' : 'none';
+  const catCard = document.getElementById('cat-card-' + safe);
+  if (catCard) catCard.className = 'card cat-card ' + (next >= 1 ? 'owned' : 'missing');
   if (activeDeckIdx >= 0) renderDeckList();
   updateTotal();
   setStatus('UNSAVED CHANGES — PRESS 💾 SAVE', '');
@@ -1852,7 +1859,7 @@ function anRenderRoot() {{
   const wrStr    = rawWr !== undefined ? (rawWr * 100).toFixed(1) + '%' : 'N/A';
 
   // ── Insight strip data ────────────────────────────────────────────────
-  const ad = ANALYSIS_DATA.find(a => a.name === yourDeck.id || a.name === yourDeck.name) || {{}};
+  const ad = ANALYSIS_DATA.find(a => a.id === yourDeck.id || a.name === yourDeck.name) || {{}};
   const attr = (ad && ad.attribution) || {{}};
   const worstRole = AN_ROLES.reduce((best, r) => (attr[r]||0) < (attr[best]||0) ? r : best, AN_ROLES[0]);
   const worstVal  = Math.abs(attr[worstRole] || 0).toFixed(1);
@@ -2543,7 +2550,8 @@ async function refreshData() {{
     if (data.matchup)    MATCHUP_DATA  = data.matchup;
     if (data.regression) REGRESSION    = data.regression;
     if (data.decks) {{
-      ARCHETYPES.splice(0, ARCHETYPES.length, ...data.decks);
+      const customDecks = ARCHETYPES.filter(d => d.custom);
+      ARCHETYPES.splice(0, ARCHETYPES.length, ...data.decks, ...customDecks);
       activeDeckIdx = -1;
     }}
     if (activeTab === 'meta')       renderMeta();
@@ -2569,12 +2577,12 @@ async function saveCollection() {{
     if (resp.ok) {{
       setStatus('✔ COLLECTION SAVED!', 'ok');
       btn.textContent = '✔ SAVED!';
-      setTimeout(() => {{ btn.textContent = '💾 SAVE'; }}, 2000);
+      setTimeout(() => {{ btn.textContent = 'SAVE'; }}, 2000);
       if (activeTab === 'analysis') renderAnalysis();
     }} else throw new Error();
   }} catch(e) {{
     setStatus('✘ SAVE FAILED — IS THE SERVER RUNNING?', 'err');
-    btn.textContent = '💾 SAVE';
+    btn.textContent = 'SAVE';
   }}
 }}
 
