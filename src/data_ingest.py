@@ -198,7 +198,7 @@ def fetch_tournament_data(
     sorted_decks = sorted(
         deck_stats.items(), key=lambda x: x[1]["appearances"], reverse=True
     )
-    top_n = min(10, len(sorted_decks))
+    top_n = min(15, len(sorted_decks))
     top_archetypes_raw = sorted_decks[:top_n]
     top_appearances = sum(v["appearances"] for _, v in top_archetypes_raw)
 
