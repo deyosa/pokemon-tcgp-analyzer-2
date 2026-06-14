@@ -9,6 +9,8 @@ if _venv_lib.exists():
             _sys.path.insert(0, str(_sp))
 del _sys, _Path, _venv_lib, _p, _sp
 
+import os  # noqa: E402
+import webbrowser  # noqa: E402
 from pathlib import Path  # noqa: E402
 from src.data_ingest import fetch_card_catalog, fetch_tournament_data  # noqa: E402
 from src.models import Card, Deck  # noqa: E402
@@ -20,10 +22,12 @@ from src.card_roles import (  # noqa: E402
 from src.visualizations import (  # noqa: E402
     plot_matchup_heatmap, plot_wr_comparison, plot_role_attribution,
 )
-from src.web_collection import launch_collection_browser, _prepare_page_data  # noqa: E402
+from src.web_collection import (  # noqa: E402
+    create_flask_app, _prepare_page_data, _get_db_path, _load_collection,
+)
 
-_COLLECTION_PATH = Path(__file__).parent / "my_collection.json"
 _OUTPUTS_DIR = Path(__file__).parent / "outputs"
+_DB_PATH = _get_db_path(Path(__file__).parent)
 
 
 # ---------------------------------------------------------------------------
@@ -87,9 +91,9 @@ def _generate_charts(archetypes, matchup_matrix, predicted_wrs, attributions) ->
 # Reload callback (wired into the browser's ⟳ REFRESH button)
 # ---------------------------------------------------------------------------
 
-def _make_reload_fn(catalog: dict) -> object:
-    """Return a callable the browser server uses to hot-reload tournament data."""
-    def reload() -> dict:
+def _make_reload_fn(catalog: dict, db_path: Path) -> object:
+    """Return a callable that hot-reloads tournament data for the /refresh endpoint."""
+    def reload() -> tuple:
         from src.data_ingest import _TOURNAMENT_CACHE
         if _TOURNAMENT_CACHE.exists():
             _TOURNAMENT_CACHE.unlink()
@@ -110,12 +114,7 @@ def _make_reload_fn(catalog: dict) -> object:
             _run_analysis(catalog, new_archetypes, new_matchup_matrix, new_meta_decks)
         _generate_charts(new_archetypes, new_matchup_matrix, new_predicted_wrs, new_attributions)
 
-        # Load the latest saved collection so analysis reflects current state
-        my_cards: dict = {}
-        if _COLLECTION_PATH.exists():
-            import json
-            with open(_COLLECTION_PATH) as f:
-                my_cards = json.load(f)
+        my_cards = _load_collection(db_path)
 
         page_data = _prepare_page_data(
             new_archetypes, catalog, my_cards,
@@ -124,8 +123,17 @@ def _make_reload_fn(catalog: dict) -> object:
             role_map=new_role_map,
             regression=new_regression,
         )
+        state_updates = {
+            "archetypes":     new_archetypes,
+            "ewrs":           new_ewrs,
+            "attributions":   new_attributions,
+            "meta_decks":     new_meta_decks,
+            "matchup_matrix": new_matchup_matrix,
+            "role_map":       new_role_map,
+            "regression":     new_regression,
+        }
         print("  [REFRESH] Done.\n")
-        return page_data  # {decks, meta, analysis} sent as JSON to the browser
+        return page_data, state_updates
 
     return reload
 
@@ -134,7 +142,8 @@ def _make_reload_fn(catalog: dict) -> object:
 # Main entry point
 # ---------------------------------------------------------------------------
 
-def main() -> None:
+def create_app():
+    """Run the analysis pipeline and return a ready-to-serve Flask app."""
     print("=" * 55)
     print("  Pokémon TCG Pocket Meta-Analyzer")
     print("=" * 55)
@@ -147,12 +156,12 @@ def main() -> None:
     print("Generating charts...")
     _generate_charts(archetypes, matchup_matrix, predicted_wrs, attributions)
 
-    reload_fn = _make_reload_fn(catalog)
+    reload_fn = _make_reload_fn(catalog, _DB_PATH)
 
-    launch_collection_browser(
+    return create_flask_app(
         archetypes=archetypes,
         catalog=catalog,
-        collection_path=_COLLECTION_PATH,
+        db_path=_DB_PATH,
         ewrs=ewrs,
         attributions=attributions,
         meta_decks=meta_decks,
@@ -162,6 +171,17 @@ def main() -> None:
         role_map=role_map,
         regression=regression,
     )
+
+
+def main() -> None:
+    """Local development entry point — runs the Flask dev server and opens a browser."""
+    app = create_app()
+    port = int(os.environ.get("PORT", 8765))
+    open_browser = os.environ.get("OPEN_BROWSER", "1").lower() not in ("0", "false", "no")
+    if open_browser:
+        import threading
+        threading.Timer(0.5, lambda: webbrowser.open(f"http://localhost:{port}")).start()
+    app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)
 
 
 if __name__ == "__main__":

@@ -1,14 +1,11 @@
 from __future__ import annotations
 import json
-import mimetypes
+import os
+import sqlite3
 import threading
-import webbrowser
-import http.server
-import socketserver
 from pathlib import Path
+from flask import Flask, Response, abort, jsonify, request, send_from_directory
 from src.models import Card, Collection
-
-_PORT = 8765
 _CDN = "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket"
 # Catalog set codes that differ from the CDN's set codes
 _SET_REMAP = {"PROMO-A": "P-A", "PROMO-B": "P-B"}
@@ -2535,97 +2532,96 @@ document.addEventListener('keydown', e => {{ if (e.key === 'Escape') closeCardZo
 </html>"""  # noqa: E501
 
 
-class _Handler(http.server.BaseHTTPRequestHandler):
-    html: str = ""
-    collection_path: Path = Path("my_collection.json")
-    custom_decks_path: Path = Path("my_decks.json")
-    outputs_dir: Path = Path("outputs")
-    reload_fn = None  # callable() -> dict {decks, meta, analysis}
+# ── SQLite persistence ─────────────────────────────────────────────────────────
 
-    def do_GET(self) -> None:  # noqa: N802
-        if self.path in ("/", ""):
-            self.send_response(200)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
-            self.end_headers()
-            self.wfile.write(self.__class__.html.encode())
-
-        elif self.path.startswith("/charts/"):
-            fname = self.path[len("/charts/"):]
-            fpath = self.__class__.outputs_dir / fname
-            if fpath.exists() and fpath.suffix in (".png", ".jpg", ".svg"):
-                mime, _ = mimetypes.guess_type(str(fpath))
-                self.send_response(200)
-                self.send_header("Content-Type", mime or "image/png")
-                self.end_headers()
-                self.wfile.write(fpath.read_bytes())
-            else:
-                self.send_response(404)
-                self.end_headers()
-        else:
-            self.send_response(404)
-            self.end_headers()
-
-    def do_POST(self) -> None:  # noqa: N802
-        length = int(self.headers.get("Content-Length", 0))
-        body = self.rfile.read(length)
-
-        if self.path == "/save":
-            try:
-                data = json.loads(body)
-                with open(self.__class__.collection_path, "w") as f:
-                    json.dump(data, f, indent=2)
-                self.send_response(200)
-                self.end_headers()
-                self.wfile.write(b"OK")
-            except Exception:
-                self.send_response(500)
-                self.end_headers()
-
-        elif self.path == "/refresh":
-            fn = self.__class__.reload_fn
-            if fn is None:
-                self.send_response(501)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(b'{"error":"reload not configured"}')
-                return
-            try:
-                new_page_data = fn()
-                payload = json.dumps(new_page_data).encode()
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(payload)
-            except Exception as exc:
-                self.send_response(500)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(json.dumps({"error": str(exc)}).encode())
-
-        elif self.path == "/save-decks":
-            try:
-                data = json.loads(body)
-                with open(self.__class__.custom_decks_path, "w") as f:
-                    json.dump(data, f, indent=2)
-                self.send_response(200)
-                self.end_headers()
-                self.wfile.write(b"OK")
-            except Exception:
-                self.send_response(500)
-                self.end_headers()
-
-        else:
-            self.send_response(404)
-            self.end_headers()
-
-    def log_message(self, fmt: str, *args) -> None:  # noqa: ANN002
-        pass  # suppress access logs
+def _get_db_path(base_dir: Path) -> Path:
+    return base_dir / "collection.db"
 
 
-def launch_collection_browser(
+def _init_db(db_path: Path) -> None:
+    with sqlite3.connect(db_path, check_same_thread=False) as con:
+        con.executescript("""
+            CREATE TABLE IF NOT EXISTS collection (
+                card_id TEXT PRIMARY KEY,
+                count   INTEGER NOT NULL DEFAULT 0
+            );
+            CREATE TABLE IF NOT EXISTS custom_decks (
+                deck_id TEXT PRIMARY KEY,
+                data    TEXT NOT NULL
+            );
+            PRAGMA journal_mode = WAL;
+        """)
+
+
+def _load_collection(db_path: Path) -> dict:
+    with sqlite3.connect(db_path, check_same_thread=False) as con:
+        rows = con.execute("SELECT card_id, count FROM collection").fetchall()
+    return {row[0]: row[1] for row in rows}
+
+
+def _save_collection(db_path: Path, cards: dict) -> None:
+    with sqlite3.connect(db_path, check_same_thread=False) as con:
+        con.execute("DELETE FROM collection")
+        con.executemany(
+            "INSERT INTO collection (card_id, count) VALUES (?, ?)",
+            [(k, v) for k, v in cards.items() if isinstance(v, int) and v > 0],
+        )
+
+
+def _load_custom_decks(db_path: Path) -> list:
+    with sqlite3.connect(db_path, check_same_thread=False) as con:
+        rows = con.execute(
+            "SELECT data FROM custom_decks ORDER BY rowid"
+        ).fetchall()
+    return [json.loads(row[0]) for row in rows]
+
+
+def _save_custom_decks(db_path: Path, decks: list) -> None:
+    with sqlite3.connect(db_path, check_same_thread=False) as con:
+        con.execute("DELETE FROM custom_decks")
+        con.executemany(
+            "INSERT INTO custom_decks (deck_id, data) VALUES (?, ?)",
+            [(d["id"], json.dumps(d)) for d in decks if "id" in d],
+        )
+
+
+def _maybe_migrate_json(db_path: Path) -> None:
+    """One-time migration from legacy JSON files into SQLite on first run."""
+    parent = db_path.parent
+    coll_json = parent / "my_collection.json"
+    decks_json = parent / "my_decks.json"
+
+    with sqlite3.connect(db_path, check_same_thread=False) as con:
+        has_cards = con.execute("SELECT COUNT(*) FROM collection").fetchone()[0] > 0
+        has_decks = con.execute("SELECT COUNT(*) FROM custom_decks").fetchone()[0] > 0
+
+    if not has_cards and coll_json.exists():
+        try:
+            with open(coll_json) as f:
+                cards = json.load(f)
+            if isinstance(cards, dict):
+                _save_collection(db_path, cards)
+                print(f"  Migrated {len(cards)} cards from {coll_json.name}")
+        except Exception:
+            pass
+
+    if not has_decks and decks_json.exists():
+        try:
+            with open(decks_json) as f:
+                decks = json.load(f)
+            if isinstance(decks, list):
+                _save_custom_decks(db_path, decks)
+                print(f"  Migrated {len(decks)} custom decks from {decks_json.name}")
+        except Exception:
+            pass
+
+
+# ── Flask application factory ──────────────────────────────────────────────────
+
+def create_flask_app(
     archetypes: list[dict],
     catalog: dict[str, Card],
-    collection_path: Path,
+    db_path: Path,
     ewrs: list[float] | None = None,
     attributions: list[dict] | None = None,
     meta_decks: list | None = None,
@@ -2634,49 +2630,100 @@ def launch_collection_browser(
     matchup_matrix: dict | None = None,
     role_map: dict | None = None,
     regression=None,
-) -> None:
-    """Start a local server and open the full retro browser UI."""
+) -> Flask:
+    """Build and return the Flask WSGI application."""
     ewrs = ewrs or []
     attributions = attributions or []
     meta_decks = meta_decks or []
+    outputs_dir = (outputs_dir or Path("outputs")).resolve()
 
-    my_cards: dict = {}
-    if collection_path.exists():
-        with open(collection_path) as f:
-            my_cards = json.load(f)
+    _init_db(db_path)
+    _maybe_migrate_json(db_path)
 
-    custom_decks_path = collection_path.parent / "my_decks.json"
-    custom_decks: list = []
-    if custom_decks_path.exists():
-        with open(custom_decks_path) as f:
-            custom_decks = json.load(f)
+    # Mutable pipeline state — updated atomically by /refresh
+    _state: dict = {
+        "archetypes":     archetypes,
+        "ewrs":           ewrs,
+        "attributions":   attributions,
+        "meta_decks":     meta_decks,
+        "matchup_matrix": matchup_matrix,
+        "role_map":       role_map,
+        "regression":     regression,
+        "html":           None,   # None = needs rebuild
+    }
+    _lock = threading.Lock()
 
-    page_data = _prepare_page_data(
-        archetypes, catalog, my_cards, ewrs, attributions, meta_decks, custom_decks,
-        matchup_matrix=matchup_matrix,
-        role_map=role_map,
-        regression=regression,
-    )
-    _Handler.html = _build_html(page_data, my_cards)
-    _Handler.collection_path = collection_path
-    _Handler.custom_decks_path = custom_decks_path
-    _Handler.outputs_dir = outputs_dir or Path("outputs")
-    _Handler.reload_fn = reload_fn
+    def _get_html() -> str:
+        if _state["html"] is None:
+            with _lock:
+                if _state["html"] is None:
+                    my_cards = _load_collection(db_path)
+                    custom_decks = _load_custom_decks(db_path)
+                    page_data = _prepare_page_data(
+                        _state["archetypes"], catalog, my_cards,
+                        _state["ewrs"], _state["attributions"], _state["meta_decks"],
+                        custom_decks=custom_decks,
+                        matchup_matrix=_state["matchup_matrix"],
+                        role_map=_state["role_map"],
+                        regression=_state["regression"],
+                    )
+                    _state["html"] = _build_html(page_data, my_cards)
+        return _state["html"]
 
-    class _ReusingServer(socketserver.TCPServer):
-        allow_reuse_address = True
+    app = Flask(__name__)
+    app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024  # 10 MB POST limit
 
-    with _ReusingServer(("", _PORT), _Handler) as httpd:
-        url = f"http://localhost:{_PORT}"
-        print(f"\n  Opening browser UI at {url}")
-        print("  Press ENTER in this terminal to close.\n")
-        webbrowser.open(url)
+    @app.get("/")
+    def index():
+        return Response(_get_html(), mimetype="text/html; charset=utf-8")
 
-        t = threading.Thread(target=httpd.serve_forever, daemon=True)
-        t.start()
+    @app.get("/charts/<path:filename>")
+    def charts(filename):
+        fpath = (outputs_dir / filename).resolve()
+        if not str(fpath).startswith(str(outputs_dir) + os.sep):
+            abort(403)
+        if not fpath.exists() or fpath.suffix not in (".png", ".jpg", ".svg"):
+            abort(404)
+        return send_from_directory(str(outputs_dir), filename)
+
+    @app.post("/save")
+    def save():
+        data = request.get_json(force=True, silent=True)
+        if not isinstance(data, dict):
+            abort(400)
+        _save_collection(db_path, data)
+        with _lock:
+            _state["html"] = None
+        return "OK"
+
+    @app.post("/save-decks")
+    def save_decks():
+        data = request.get_json(force=True, silent=True)
+        if not isinstance(data, list):
+            abort(400)
+        _save_custom_decks(db_path, data)
+        with _lock:
+            _state["html"] = None
+        return "OK"
+
+    @app.post("/refresh")
+    def refresh():
+        if reload_fn is None:
+            return jsonify({"error": "reload not configured"}), 501
         try:
-            input()
-        except (KeyboardInterrupt, EOFError):
-            pass
-        httpd.shutdown()
-        print("  Browser closed.\n")
+            result = reload_fn()
+            # reload_fn returns (page_data, state_updates) or just page_data
+            if isinstance(result, tuple):
+                page_data, state_updates = result
+                with _lock:
+                    _state.update(state_updates)
+                    _state["html"] = None
+            else:
+                page_data = result
+                with _lock:
+                    _state["html"] = None
+            return jsonify(page_data)
+        except Exception as exc:
+            return jsonify({"error": str(exc)}), 500
+
+    return app
