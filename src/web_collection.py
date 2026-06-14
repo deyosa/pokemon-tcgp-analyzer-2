@@ -450,6 +450,24 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .mq-item {{ padding: 0 40px; }}
   .mq-slash {{ color: var(--pink); margin-right: 6px; }}
 
+  /* ── Support banner ── */
+  #support-banner {{
+    flex-shrink: 0; border-bottom: 2px solid var(--border);
+    background: #FF5E5B; color: #fff;
+    font-family: var(--font); font-size: 11px; letter-spacing: 1px;
+    padding: 6px 20px; display: flex; align-items: center; justify-content: center; gap: 16px;
+  }}
+  #support-banner span {{ opacity: .9; }}
+  .sb-link {{
+    color: #fff; text-decoration: none; font-weight: 700;
+    border: 2px solid rgba(255,255,255,.6); padding: 3px 10px;
+    transition: background .1s;
+  }}
+  .sb-link:hover {{ background: rgba(255,255,255,.2); }}
+  @media (max-width: 480px) {{
+    #support-banner {{ font-size: 10px; padding: 5px 12px; gap: 10px; flex-wrap: wrap; justify-content: center; }}
+  }}
+
   /* ── Status toast ── */
   #status-msg {{
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
@@ -1436,6 +1454,13 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
       <span class="mq-item"><span class="mq-slash">//</span> WIN RATE ESTIMATOR</span>
       <span class="mq-item"><span class="mq-slash">//</span> CARD ROLE CLASSIFIER</span>
     </div>
+  </div>
+
+  <!-- Support banner -->
+  <div id="support-banner">
+    <span>☕ Enjoying this free tool?</span>
+    <a class="sb-link" href="https://ko-fi.com/deyosa" target="_blank" rel="noopener">DONATE ON KO-FI</a>
+    <a class="sb-link" href="https://www.amazon.com/s?k=pokemon+tcg+pocket+booster+pack&tag=pocketmeta00-20" target="_blank" rel="noopener sponsored">SHOP CARDS</a>
   </div>
 
   <div id="content">
