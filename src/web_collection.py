@@ -2641,6 +2641,30 @@ document.addEventListener('keydown', e => {{ if (e.key === 'Escape') closeCardZo
   <img id="card-zoom-img" src="" alt="">
 </div>
 
+<!-- Disclaimer -->
+<style>
+  #disclaimer {{
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 199;
+    background: var(--bg); border-top: 2px solid var(--border);
+    font-family: var(--mono); font-size: 10px; color: var(--dim);
+    text-align: center; padding: 5px 16px; line-height: 1.4;
+    pointer-events: none;
+  }}
+  /* On desktop push tab content above the disclaimer bar */
+  .tab-pane {{ padding-bottom: 48px; }}
+  #card-area {{ padding-bottom: 48px; }}
+  @media (max-width: 768px) {{
+    /* On mobile sit above the fixed tab bar (60px) */
+    #disclaimer {{ bottom: 60px; font-size: 9px; padding: 4px 10px; }}
+    .tab-pane {{ padding-bottom: 140px !important; }}
+    #card-area {{ padding-bottom: 140px; }}
+  }}
+</style>
+<div id="disclaimer">
+  Not affiliated with, endorsed, or approved by Nintendo, The Pokémon Company, or Creatures Inc.
+  Pokémon and all related names are trademarks of Nintendo/Creatures Inc./GAME FREAK inc.
+</div>
+
 </body>
 </html>"""  # noqa: E501
 
