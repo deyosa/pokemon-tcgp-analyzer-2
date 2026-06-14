@@ -2701,7 +2701,7 @@ document.addEventListener('click', function(e) {{
       <span class="sl-sub">One-time donation · Ko-fi</span>
     </span>
   </a>
-  <a class="support-link" href="https://www.amazon.com/s?k=pokemon+tcg+pocket+booster+pack&tag=YOUR_AMAZON_TAG" target="_blank" rel="noopener sponsored">
+  <a class="support-link" href="https://www.amazon.com/s?k=pokemon+tcg+pocket+booster+pack&tag=pocketmeta00-20" target="_blank" rel="noopener sponsored">
     <span class="sl-icon">🛒</span>
     <span class="sl-text">
       <span class="sl-title">SHOP POKEMON CARDS</span>
