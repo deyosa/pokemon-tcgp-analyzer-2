@@ -1834,7 +1834,7 @@ function shareDeck() {{
   const lines = [`${{deck.name.toUpperCase()}} — Pokemon TCG Pocket Deck`, ''];
   deck.cards.forEach(c => lines.push(`${{c.need}}x ${{c.name}}`));
   lines.push('', 'Built with pocket-meta.online');
-  navigator.clipboard.writeText(lines.join('\n')).then(() => {{
+  navigator.clipboard.writeText(lines.join('\\n')).then(() => {{
     const btn = document.getElementById('share-deck-btn');
     btn.textContent = '✓ COPIED!';
     setTimeout(() => {{ btn.textContent = '📋 COPY'; }}, 2000);
