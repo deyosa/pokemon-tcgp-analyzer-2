@@ -1219,22 +1219,29 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
 
   /* ── Mobile responsive ── */
   @media (max-width: 768px) {{
-    /* Nav */
-    #top-nav {{ height: auto; flex-wrap: wrap; min-height: 56px; }}
-    #nav-logo {{ min-width: unset; padding: 0 12px; border-right: none; gap: 8px; }}
+    /* Nav — logo row on top, tabs fixed to bottom of screen */
+    #top-nav {{ height: 52px; flex-wrap: nowrap; }}
+    #nav-logo {{ min-width: unset; padding: 0 12px; border-right: none; gap: 8px; flex: 1; }}
     #nav-logo-name {{ font-size: 14px; }}
     #nav-logo-sub {{ display: none; }}
     #nav-links {{
-      order: 3; width: 100%; border-top: 2px solid var(--border);
-      overflow-x: auto; scrollbar-width: none;
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+      background: var(--bg); border-top: 4px solid var(--border);
+      height: 60px; overflow: visible; width: 100%;
     }}
-    #nav-links::-webkit-scrollbar {{ display: none; }}
-    .tab-btn {{ min-width: 80px; padding: 0 10px; border-right: 2px solid var(--border); }}
-    .tab-btn .nav-en {{ font-size: 13px; }}
+    .tab-btn {{
+      flex: 1; min-width: unset; padding: 0;
+      height: 60px; border-right: 2px solid var(--border);
+    }}
+    .tab-btn:last-child {{ border-right: none; }}
+    .tab-btn .nav-en {{ font-size: 11px; }}
     .tab-btn .nav-jp {{ font-size: 6px; }}
-    #nav-right {{ padding: 0 10px; gap: 8px; border-left: 2px solid var(--border); }}
+    #nav-right {{ padding: 0 10px; gap: 8px; border-left: 2px solid var(--border); flex-shrink: 0; }}
     #total-label {{ display: none; }}
     #save-btn {{ font-size: 10px; padding: 8px 12px; }}
+    /* Push scrollable content above the fixed bottom tab bar */
+    .tab-pane {{ padding-bottom: 80px !important; }}
+    #card-area {{ padding-bottom: 80px; }}
 
     /* Marquee */
     #marquee-strip {{ font-size: 13px; }}
