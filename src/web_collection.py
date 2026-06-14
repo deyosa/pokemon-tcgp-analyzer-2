@@ -1217,6 +1217,104 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   }}
   .card-img {{ cursor: zoom-in; }}
 
+  /* ── Mobile responsive ── */
+  @media (max-width: 768px) {{
+    /* Nav */
+    #top-nav {{ height: auto; flex-wrap: wrap; min-height: 56px; }}
+    #nav-logo {{ min-width: unset; padding: 0 12px; border-right: none; gap: 8px; }}
+    #nav-logo-name {{ font-size: 14px; }}
+    #nav-logo-sub {{ display: none; }}
+    #nav-links {{
+      order: 3; width: 100%; border-top: 2px solid var(--border);
+      overflow-x: auto; scrollbar-width: none;
+    }}
+    #nav-links::-webkit-scrollbar {{ display: none; }}
+    .tab-btn {{ min-width: 80px; padding: 0 10px; border-right: 2px solid var(--border); }}
+    .tab-btn .nav-en {{ font-size: 13px; }}
+    .tab-btn .nav-jp {{ font-size: 6px; }}
+    #nav-right {{ padding: 0 10px; gap: 8px; border-left: 2px solid var(--border); }}
+    #total-label {{ display: none; }}
+    #save-btn {{ font-size: 10px; padding: 8px 12px; }}
+
+    /* Marquee */
+    #marquee-strip {{ font-size: 13px; }}
+
+    /* Tab content */
+    .tab-pane {{ padding: 20px 14px 40px; }}
+
+    /* Page headers */
+    .page-header h1 {{ font-size: 32px; }}
+    .page-header-jp {{ font-size: 9px; }}
+
+    /* Meta grid — 2 columns */
+    .meta-grid {{ grid-template-columns: repeat(2, 1fr); gap: 12px; }}
+    .arch-img-area {{ height: 160px; }}
+
+    /* Collection — stack vertically */
+    #collection-pane {{ grid-template-columns: 1fr; grid-template-rows: 260px 1fr; }}
+    #deck-list {{ border-right: none; border-bottom: 4px solid var(--border); overflow-y: auto; padding: 10px 8px 16px; }}
+    #card-area {{ padding: 16px 12px; }}
+    #card-grid {{ grid-template-columns: repeat(2, 1fr); gap: 10px; }}
+
+    /* Analysis header */
+    .an-header {{ padding: 24px 16px 16px; }}
+    .an-headline {{ font-size: 28px; }}
+    .an-subtitle {{ font-size: 9px; }}
+
+    /* Analysis scoreboard — stack vertically */
+    .an-scoreboard {{ grid-template-columns: 1fr; gap: 16px; padding: 20px 16px; }}
+    .an-sc-body {{ height: 200px; }}
+    .an-score-card-wrap.right {{ align-items: flex-start; }}
+    .an-verdict-wr {{ font-size: 40px; }}
+
+    /* Analysis nav */
+    .an-nav {{ padding: 12px 16px; flex-wrap: wrap; gap: 10px; }}
+    .an-nav-label {{ border-right: none; padding-right: 0; border-bottom: 2px solid var(--border); padding-bottom: 8px; width: 100%; }}
+
+    /* Analysis workspace */
+    .an-workspace {{ padding: 16px 14px 0; gap: 16px; }}
+    .an-panel {{ padding: 16px; }}
+    .an-why-body {{ grid-template-columns: 1fr; }}
+    .an-role-row {{ grid-template-columns: 80px 1fr 56px 56px; padding: 8px 10px; }}
+    .an-diverg-header {{ grid-template-columns: 70px 1fr 1fr 48px; }}
+    .an-diverg-row {{ grid-template-columns: 70px 1fr 1fr 48px; }}
+    .an-acq-grid {{ grid-template-columns: 1fr; }}
+    .an-field {{ padding: 24px 14px 48px; }}
+    .an-tier-deck {{ width: 90px; }}
+
+    /* Analysis picker */
+    .an-picker-grid {{ grid-template-columns: repeat(2, 1fr); gap: 10px; }}
+    #an-picker-modal {{ padding: 16px; max-height: 85vh; }}
+
+    /* New Deck modal */
+    #nd-modal {{ width: 98vw; max-height: 94vh; }}
+    #nd-body {{ grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }}
+    #nd-search-panel {{ border-right: none; border-bottom: 2px solid var(--border); }}
+
+    /* Catalog */
+    #catalog-grid {{ grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }}
+    #catalog-filters {{ gap: 8px; }}
+
+    /* Section labels */
+    .section-label h2 {{ font-size: 20px; }}
+  }}
+
+  @media (max-width: 480px) {{
+    .meta-grid {{ grid-template-columns: repeat(2, 1fr); gap: 8px; }}
+    #card-grid {{ grid-template-columns: repeat(2, 1fr); gap: 8px; }}
+    .tab-btn {{ min-width: 68px; padding: 0 6px; }}
+    .tab-btn .nav-en {{ font-size: 11px; }}
+    .page-header h1 {{ font-size: 26px; }}
+    .an-headline {{ font-size: 22px; }}
+    .an-scoreboard {{ padding: 14px 12px; }}
+    .an-sc-body {{ height: 160px; }}
+    .an-verdict-wr {{ font-size: 32px; }}
+    .an-picker-grid {{ grid-template-columns: repeat(2, 1fr); }}
+    #catalog-grid {{ grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }}
+    .tab-pane {{ padding: 14px 10px 32px; }}
+    #card-area {{ padding: 12px 8px; }}
+  }}
+
 </style>
 </head>
 <body>
