@@ -381,14 +381,6 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     padding: 0 20px; border-left: 4px solid var(--border); flex-shrink: 0;
   }}
   #total-label {{ font-family: var(--font); font-size: 14px; color: var(--text); white-space: nowrap; }}
-  #refresh-btn {{
-    background: var(--bg); border: 2px solid var(--border); color: var(--text);
-    font-family: var(--font); font-size: 18px; padding: 6px 12px;
-    cursor: pointer; transition: box-shadow .07s, transform .07s; line-height: 1;
-    box-shadow: var(--shadow);
-  }}
-  #refresh-btn:hover {{ box-shadow: none; transform: translate(4px,4px); }}
-  #refresh-btn:disabled {{ opacity: .4; cursor: not-allowed; box-shadow: none; transform: none; }}
   #save-btn {{
     background: var(--border); border: 2px solid var(--border); color: var(--bg);
     font-family: var(--font); font-size: 12px; padding: 10px 20px;
@@ -1434,7 +1426,6 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     </div>
     <div id="nav-right">
       <span id="total-label">♥ <span id="total-count">0</span></span>
-      <button id="refresh-btn" onclick="refreshData()" title="Refresh tournament data">⟳</button>
       <button id="kofi-btn" onclick="toggleSupport()" title="Support the site">☕</button>
       <button id="save-btn" onclick="saveCollection()">SAVE</button>
     </div>
@@ -2603,34 +2594,6 @@ function adjustCat(cardId, delta) {{
   if (activeDeckIdx >= 0) renderDeckList();
   updateTotal();
   setStatus('UNSAVED CHANGES — PRESS 💾 SAVE', '');
-}}
-
-// ── Refresh data ─────────────────────────────────────────────────────────────
-async function refreshData() {{
-  const btn = document.getElementById('refresh-btn');
-  btn.disabled = true; btn.textContent = '...';
-  setStatus('REFRESHING TOURNAMENT DATA FROM LIMITLESS...', '');
-  try {{
-    const resp = await fetch('/refresh', {{ method: 'POST' }});
-    if (!resp.ok) throw new Error('server');
-    const data = await resp.json();
-    if (data.meta)       META_DATA.splice(0, META_DATA.length, ...data.meta);
-    if (data.analysis)   ANALYSIS_DATA = data.analysis;
-    if (data.matchup)    MATCHUP_DATA  = data.matchup;
-    if (data.regression) REGRESSION    = data.regression;
-    if (data.decks) {{
-      const customDecks = ARCHETYPES.filter(d => d.custom);
-      ARCHETYPES.splice(0, ARCHETYPES.length, ...data.decks, ...customDecks);
-      activeDeckIdx = -1;
-    }}
-    if (activeTab === 'meta')       renderMeta();
-    if (activeTab === 'collection') renderDeckList();
-    if (activeTab === 'analysis')   renderAnalysis();
-    setStatus('✔ DATA REFRESHED SUCCESSFULLY!', 'ok');
-  }} catch(e) {{
-    setStatus('✘ REFRESH FAILED — CHECK YOUR CONNECTION', 'err');
-  }}
-  btn.disabled = false; btn.textContent = '⟳';
 }}
 
 // ── Save ─────────────────────────────────────────────────────────────────────
