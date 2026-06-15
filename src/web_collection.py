@@ -364,7 +364,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     font-weight: 700; line-height: 1.2;
   }}
   #nav-logo-sub {{
-    font-family: var(--pixel); font-size: 10px; color: var(--dim); margin-top: 4px;
+    font-family: var(--pixel); font-size: 12px; color: var(--dim); margin-top: 4px;
   }}
   #nav-links {{ display: flex; flex: 1; align-items: stretch; }}
   .tab-btn {{
@@ -420,7 +420,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .support-link {{
     display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin-bottom: 8px;
     border: 2px solid var(--border); text-decoration: none; color: var(--text);
-    font-family: var(--font); font-size: 11px; letter-spacing: 1px;
+    font-family: var(--font); font-size: 13px; letter-spacing: 1px;
     box-shadow: 3px 3px 0 0 #0A0A0A; transition: box-shadow .07s, transform .07s;
   }}
   .support-link:last-child {{ margin-bottom: 0; }}
@@ -428,7 +428,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .support-link .sl-icon {{ font-size: 22px; flex-shrink: 0; }}
   .support-link .sl-text {{ display: flex; flex-direction: column; gap: 2px; }}
   .support-link .sl-title {{ font-weight: 700; }}
-  .support-link .sl-sub {{ font-family: var(--mono); font-size: 9px; color: var(--dim); }}
+  .support-link .sl-sub {{ font-family: var(--mono); font-size: 12px; color: var(--dim); }}
   #support-close {{
     position: absolute; top: 6px; right: 8px; background: none; border: none;
     color: var(--dim); font-size: 16px; cursor: pointer; padding: 4px; line-height: 1;
@@ -456,7 +456,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   #support-banner {{
     flex-shrink: 0; border-bottom: 2px solid var(--border);
     background: #FF5E5B; color: #fff;
-    font-family: var(--font); font-size: 11px; letter-spacing: 1px;
+    font-family: var(--font); font-size: 13px; letter-spacing: 1px;
     padding: 6px 20px; display: flex; align-items: center; justify-content: center; gap: 16px;
   }}
   #support-banner span {{ opacity: .9; }}
@@ -471,13 +471,13 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   }}
   .sb-link.sb-dark:hover {{ background: #222; }}
   @media (max-width: 480px) {{
-    #support-banner {{ font-size: 10px; padding: 5px 12px; gap: 10px; flex-wrap: wrap; justify-content: center; }}
+    #support-banner {{ font-size: 12px; padding: 5px 12px; gap: 10px; flex-wrap: wrap; justify-content: center; }}
   }}
 
   /* ── Status toast ── */
   #status-msg {{
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-    font-family: var(--font); font-size: 11px; color: var(--bg);
+    font-family: var(--font); font-size: 13px; color: var(--bg);
     background: var(--border); border: 4px solid var(--border);
     box-shadow: var(--shadow); padding: 12px 24px; z-index: 5000;
     opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap;
@@ -506,19 +506,19 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     letter-spacing: -1px; line-height: 1; color: var(--text);
   }}
   .page-header-jp {{
-    font-family: var(--pixel); font-size: 11px; color: var(--pink); margin-top: 10px;
+    font-family: var(--pixel); font-size: 13px; color: var(--pink); margin-top: 10px;
   }}
   .page-subtitle {{
     font-family: var(--mono); font-size: 12px; color: var(--dim);
     margin-top: 12px; line-height: 1.6;
   }}
   .page-subtitle .ps-updated {{
-    display: inline-block; margin-top: 6px; font-size: 10px;
+    display: inline-block; margin-top: 6px; font-size: 12px;
     background: var(--panel); border: 1px solid var(--border);
     padding: 2px 8px; color: var(--dim);
   }}
   .page-subtitle .ps-hint {{
-    display: inline-block; margin-top: 4px; font-size: 10px;
+    display: inline-block; margin-top: 4px; font-size: 12px;
     color: var(--dim); font-style: italic;
   }}
 
@@ -528,7 +528,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     margin: 40px 0 20px; border-bottom: 2px solid var(--border); padding-bottom: 12px;
   }}
   .section-label h2 {{ font-family: var(--font); font-size: 26px; font-weight: 700; }}
-  .section-label span {{ font-family: var(--pixel); font-size: 9px; color: var(--dim); }}
+  .section-label span {{ font-family: var(--pixel); font-size: 12px; color: var(--dim); }}
   .wr-hi {{ color: var(--green); font-weight: bold; }}
   .wr-lo {{ color: var(--red); }}
 
@@ -565,7 +565,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .arch-hover-cards::-webkit-scrollbar {{ width: 4px; }}
   .arch-hover-cards::-webkit-scrollbar-thumb {{ background: rgba(255,255,255,0.3); border-radius: 2px; }}
   .meta-card-item {{
-    display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: #fff;
+    display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 13px; color: #fff;
   }}
   .meta-card-thumb {{
     width: 60px; height: 80px; background: var(--panel); border: 2px solid rgba(255,255,255,0.2);
@@ -573,11 +573,11 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   }}
   img.meta-card-thumb {{ cursor: zoom-in; }}
   .meta-card-name {{
-    font-family: var(--mono); font-size: 10px; color: #ccc; line-height: 1.2; word-break: break-word;
+    font-family: var(--mono); font-size: 12px; color: #ccc; line-height: 1.2; word-break: break-word;
     max-width: 70px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2;
   }}
   .meta-card-count {{
-    font-family: var(--pixel); font-size: 9px; color: var(--gold); font-weight: 700;
+    font-family: var(--pixel); font-size: 12px; color: var(--gold); font-weight: 700;
   }}
   .arch-img-area {{
     height: 220px; background: var(--panel); border-bottom: 4px solid var(--border);
@@ -593,7 +593,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .arch-sticker {{
     display: inline-block;
     background: var(--gold); border: 2px solid var(--border);
-    font-family: var(--pixel); font-size: 10px; color: #0A0A0A;
+    font-family: var(--pixel); font-size: 12px; color: #0A0A0A;
     padding: 4px 8px; box-shadow: 2px 2px 0 0 var(--border);
     margin-bottom: 8px;
   }}
@@ -605,13 +605,13 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   }}
   .arch-stats {{ display: flex; align-items: flex-end; justify-content: space-between; }}
   .arch-share {{ font-family: var(--font); font-size: 28px; color: var(--pink); font-weight: 700; line-height: 1; }}
-  .arch-wr {{ font-family: var(--pixel); font-size: 10px; color: var(--dim); text-align: right; line-height: 2.2; }}
+  .arch-wr {{ font-family: var(--pixel); font-size: 12px; color: var(--dim); text-align: right; line-height: 2.2; }}
   .arch-card-hi {{ border-left: 8px solid var(--green) !important; }}
   .arch-card-lo {{ border-left: 8px solid var(--red) !important; }}
   .arch-owned-row {{ display: flex; align-items: center; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 2px solid var(--border); }}
-  .arch-owned-pct {{ font-family: var(--mono); font-size: 10px; color: var(--dim); }}
-  .arch-buildable-yes {{ font-family: var(--pixel); font-size: 10px; color: var(--green); }}
-  .arch-buildable-no {{ font-family: var(--pixel); font-size: 10px; color: var(--red); }}
+  .arch-owned-pct {{ font-family: var(--mono); font-size: 12px; color: var(--dim); }}
+  .arch-buildable-yes {{ font-family: var(--pixel); font-size: 12px; color: var(--green); }}
+  .arch-buildable-no {{ font-family: var(--pixel); font-size: 12px; color: var(--red); }}
 
   /* ── COLLECTION tab ── */
   #collection-pane {{
@@ -628,7 +628,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     background: var(--panel);
   }}
   #deck-list-hint {{
-    font-family: var(--mono); font-size: 9px; color: var(--dim);
+    font-family: var(--mono); font-size: 12px; color: var(--dim);
     padding: 4px 4px 10px; line-height: 1.6; letter-spacing: 0.5px;
   }}
   #deck-list::-webkit-scrollbar {{ width: 6px; }}
@@ -650,7 +650,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .xp-bar {{ height: 100%; background: var(--green); transition: width .4s ease; }}
   .xp-bar.low {{ background: var(--red); }}
   .xp-bar.mid {{ background: var(--gold); }}
-  .deck-meta {{ display: flex; justify-content: space-between; font-size: 11px; color: var(--dim); margin-top: 6px; font-family: var(--mono); }}
+  .deck-meta {{ display: flex; justify-content: space-between; font-size: 13px; color: var(--dim); margin-top: 6px; font-family: var(--mono); }}
   .deck-item.active .deck-meta {{ color: rgba(255,255,255,.65); }}
   #card-area {{ overflow-y: auto; padding: 28px 32px; background: var(--bg); }}
   #card-area::-webkit-scrollbar {{ width: 6px; }}
@@ -663,7 +663,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   #deck-title {{ font-family: var(--font); font-size: 16px; color: var(--text); flex: 1; text-align: center; font-weight: 700; }}
   #clear-deck-btn {{
     background: transparent; border: 2px solid var(--red); color: var(--red);
-    font-family: var(--font); font-size: 9px; padding: 8px 12px;
+    font-family: var(--font); font-size: 12px; padding: 8px 12px;
     cursor: pointer; white-space: nowrap; flex-shrink: 0;
     box-shadow: var(--shadow-sm); transition: box-shadow .07s, transform .07s;
   }}
@@ -671,7 +671,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   #clear-deck-btn:disabled {{ opacity: .3; cursor: not-allowed; box-shadow: none; transform: none; }}
   #share-deck-btn {{
     background: transparent; border: 2px solid var(--blue); color: var(--blue);
-    font-family: var(--font); font-size: 9px; padding: 8px 12px;
+    font-family: var(--font); font-size: 12px; padding: 8px 12px;
     cursor: pointer; white-space: nowrap; flex-shrink: 0;
     box-shadow: var(--shadow-sm); transition: box-shadow .07s, transform .07s;
   }}
@@ -696,15 +696,15 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .card.partial {{ border-color: var(--gold); }}
   .card.missing {{ opacity: .55; }}
   .card-type-badge {{
-    font-family: var(--font); font-size: 10px; padding: 3px 8px;
+    font-family: var(--font); font-size: 12px; padding: 3px 8px;
     margin-bottom: 6px; display: inline-block; letter-spacing: 0.5px;
     border: 1px solid rgba(0,0,0,.2); color: var(--text);
   }}
   .type-Pokemon {{ background: #FFD9E6; }}
   .type-Trainer {{ background: #FFE5C2; }}
   .type-Energy  {{ background: #FFF5C2; }}
-  .card-name {{ font-family: var(--font); font-size: 10px; color: var(--text); margin-bottom: 8px; line-height: 1.6; min-height: 24px; word-break: break-word; }}
-  .need-label {{ font-family: var(--font); font-size: 10px; color: var(--dim); margin-bottom: 6px; }}
+  .card-name {{ font-family: var(--font); font-size: 12px; color: var(--text); margin-bottom: 8px; line-height: 1.6; min-height: 24px; word-break: break-word; }}
+  .need-label {{ font-family: var(--font); font-size: 12px; color: var(--dim); margin-bottom: 6px; }}
   .counter {{ display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px; }}
   .btn-counter {{
     background: var(--border); border: 2px solid var(--border); color: var(--bg);
@@ -735,7 +735,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   }}
   .an-header-eyebrow {{
     display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
-    font-family: var(--pixel); font-size: 10px;
+    font-family: var(--pixel); font-size: 12px;
   }}
   .an-header-eyebrow .an-route {{ color: var(--text); }}
   .an-header-eyebrow .an-rule {{ flex: 1; height: 2px; background: var(--border); }}
@@ -746,10 +746,10 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   }}
   .an-headline .pink {{ color: var(--pink); }}
   .an-subtitle {{
-    font-family: var(--pixel); font-size: 11px; color: var(--dim);
+    font-family: var(--pixel); font-size: 13px; color: var(--dim);
   }}
   .an-desc {{
-    font-family: var(--mono); font-size: 11px; color: var(--dim);
+    font-family: var(--mono); font-size: 13px; color: var(--dim);
     margin-top: 10px; line-height: 1.7; max-width: 560px;
   }}
 
@@ -761,7 +761,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .an-score-card-wrap {{ display: flex; flex-direction: column; gap: 10px; }}
   .an-score-card-wrap.right {{ align-items: flex-end; }}
   .an-sc-above {{
-    font-family: var(--pixel); font-size: 9px; color: var(--dim);
+    font-family: var(--pixel); font-size: 12px; color: var(--dim);
   }}
   .an-sc-body {{
     width: 100%; height: 440px; background: var(--bg-deep);
@@ -794,14 +794,14 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .an-sc-tag {{
     position: absolute; bottom: 8px; left: 8px;
     background: white; border: 2px solid var(--border);
-    font-family: var(--pixel); font-size: 10px; padding: 4px 8px;
+    font-family: var(--pixel); font-size: 12px; padding: 4px 8px;
   }}
   .an-sc-tag.right {{ left: auto; right: 8px; }}
   .an-sc-name {{
     font-family: var(--font); font-size: 32px; line-height: 1.05;
   }}
   .an-sc-meta {{
-    font-family: var(--pixel); font-size: 11px; color: var(--pink);
+    font-family: var(--pixel); font-size: 13px; color: var(--pink);
   }}
   .an-sc-dna {{
     height: 14px; border: 1px solid var(--border);
@@ -814,7 +814,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     box-shadow: none !important;
   }}
   .an-sc-prompt {{
-    font-family: var(--pixel); font-size: 10px; color: var(--dim);
+    font-family: var(--pixel); font-size: 12px; color: var(--dim);
     text-align: center; line-height: 2.5; letter-spacing: 1px;
   }}
 
@@ -824,18 +824,18 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     justify-content: center; gap: 12px; padding: 20px 0;
   }}
   .an-verdict-sticker {{
-    font-family: var(--pixel); font-size: 11px; letter-spacing: 2px;
+    font-family: var(--pixel); font-size: 13px; letter-spacing: 2px;
     padding: 8px 14px; border: 2px solid var(--border);
     box-shadow: 3px 3px 0 0 #0A0A0A; transform: rotate(-3deg);
   }}
   .an-verdict-label {{
-    font-family: var(--pixel); font-size: 10px; color: var(--dim);
+    font-family: var(--pixel); font-size: 12px; color: var(--dim);
   }}
   .an-verdict-wr {{
     font-family: var(--pixel); font-size: 64px; letter-spacing: 3px; line-height: 1;
   }}
   .an-verdict-r2 {{
-    font-family: var(--pixel); font-size: 11px; color: var(--dim);
+    font-family: var(--pixel); font-size: 13px; color: var(--dim);
   }}
   .an-verdict-dots {{ display: flex; gap: 6px; }}
   .an-verdict-dots span {{
@@ -849,7 +849,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
   }}
   .an-insight-lead {{
-    font-family: var(--pixel); font-size: 10px; color: var(--gold); flex-shrink: 0;
+    font-family: var(--pixel); font-size: 12px; color: var(--gold); flex-shrink: 0;
   }}
   .an-insight-items {{
     display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
@@ -871,7 +871,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     padding-right: 24px; flex-shrink: 0;
   }}
   .an-nav-label .big {{ font-family: var(--font); font-size: 14px; font-weight: 700; }}
-  .an-nav-label .small {{ font-family: var(--pixel); font-size: 10px; color: var(--dim); margin-top: 2px; }}
+  .an-nav-label .small {{ font-family: var(--pixel); font-size: 12px; color: var(--dim); margin-top: 2px; }}
   .an-nav-pills {{
     flex: 1; display: flex; gap: 8px; overflow-x: auto;
     scrollbar-width: thin;
@@ -892,12 +892,12 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     width: 24px; height: 24px; object-fit: cover; border: 1px solid var(--border);
     flex-shrink: 0;
   }}
-  .an-nav-pill .pill-name {{ font-family: var(--font); font-size: 11px; }}
-  .an-nav-pill .pill-wr {{ font-family: var(--pixel); font-size: 9px; }}
+  .an-nav-pill .pill-name {{ font-family: var(--font); font-size: 13px; }}
+  .an-nav-pill .pill-wr {{ font-family: var(--pixel); font-size: 12px; }}
   .an-nav-right {{
     border-left: 2px solid var(--border);
     padding-left: 24px; flex-shrink: 0;
-    font-family: var(--pixel); font-size: 11px;
+    font-family: var(--pixel); font-size: 13px;
     display: flex; flex-direction: column; gap: 4px;
   }}
 
@@ -911,13 +911,13 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     box-shadow: 4px 4px 0 0 #0A0A0A; padding: 24px;
   }}
   .an-panel-eyebrow {{
-    font-family: var(--pixel); font-size: 10px; color: var(--pink); margin-bottom: 6px;
+    font-family: var(--pixel); font-size: 12px; color: var(--pink); margin-bottom: 6px;
   }}
   .an-panel-title {{
     font-family: var(--font); font-size: 28px; font-weight: 700;
   }}
   .an-panel-subtitle {{
-    font-family: var(--pixel); font-size: 9px; color: var(--dim);
+    font-family: var(--pixel); font-size: 12px; color: var(--dim);
     border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 18px;
     display: block; margin-top: 4px;
   }}
@@ -933,13 +933,13 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .an-role-row:hover {{ border-color: var(--pink); }}
   .an-role-row.active {{ border-color: var(--pink); box-shadow: 3px 3px 0 0 var(--pink); background: #FFE4EE; }}
   .an-role-badge {{
-    font-family: var(--pixel); font-size: 9px; padding: 4px 8px;
+    font-family: var(--pixel); font-size: 12px; padding: 4px 8px;
     border: 1px solid rgba(0,0,0,.2); color: #fff; display: inline-block;
     align-self: center;
   }}
   .an-role-badge.role-tech {{ color: var(--text); }}
   .an-role-desc {{
-    font-family: var(--mono); font-size: 10px; color: var(--dim);
+    font-family: var(--mono); font-size: 12px; color: var(--dim);
     margin-top: 5px; line-height: 1.4;
   }}
   .an-comp-bar-wrap {{
@@ -948,13 +948,13 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   }}
   .an-comp-bar-fill {{ height: 100%; transition: width .4s ease; }}
   .an-comp-bar-label {{
-    font-family: var(--pixel); font-size: 10px; color: var(--dim); margin-top: 4px;
+    font-family: var(--pixel); font-size: 12px; color: var(--dim); margin-top: 4px;
   }}
   .an-role-attr {{
     font-family: var(--pixel); font-size: 13px; text-align: right; align-self: center;
   }}
   .an-role-attr-label {{
-    font-family: var(--pixel); font-size: 10px; color: var(--dim); text-align: right; align-self: center; line-height: 1.6;
+    font-family: var(--pixel); font-size: 12px; color: var(--dim); text-align: right; align-self: center; line-height: 1.6;
   }}
 
   /* Card list */
@@ -963,13 +963,13 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     border-top: 2px solid var(--border); padding-top: 18px; margin-top: 18px;
     margin-bottom: 12px;
   }}
-  .an-card-list-title {{ font-family: var(--pixel); font-size: 10px; flex: 1; }}
+  .an-card-list-title {{ font-family: var(--pixel); font-size: 12px; flex: 1; }}
   .an-filter-badge {{
-    font-family: var(--pixel); font-size: 10px; color: var(--pink);
+    font-family: var(--pixel); font-size: 12px; color: var(--pink);
     border: 1px solid var(--pink); padding: 2px 6px;
   }}
   .an-clear-btn {{
-    font-family: var(--pixel); font-size: 10px; color: var(--dim);
+    font-family: var(--pixel); font-size: 12px; color: var(--dim);
     background: none; border: 1px solid var(--border); cursor: pointer; padding: 4px 8px;
   }}
   .an-acq-item {{
@@ -985,7 +985,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .an-acq-count {{ font-family: var(--pixel); font-size: 14px; color: var(--pink); }}
   .an-acq-empty {{
     border: 2px dashed var(--border); padding: 20px;
-    font-family: var(--pixel); font-size: 9px; color: var(--dim);
+    font-family: var(--pixel); font-size: 12px; color: var(--dim);
     text-align: center; line-height: 2.5;
   }}
 
@@ -1000,7 +1000,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     display: flex; flex-direction: column; gap: 10px;
   }}
   .an-callout-title {{
-    font-family: var(--pixel); font-size: 9px; color: var(--dim);
+    font-family: var(--pixel); font-size: 12px; color: var(--dim);
     border-bottom: 1px solid var(--border); padding-bottom: 8px;
   }}
   .an-callout .arrow {{ color: var(--pink); }}
@@ -1012,7 +1012,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     gap: 8px; margin-bottom: 10px;
   }}
   .an-diverg-header span {{
-    font-family: var(--pixel); font-size: 10px; color: var(--dim);
+    font-family: var(--pixel); font-size: 12px; color: var(--dim);
   }}
   .an-diverg-row {{
     display: grid; grid-template-columns: 90px 1fr 1fr 64px;
@@ -1029,11 +1029,11 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     height: 100%; min-width: 2px; transition: width .4s ease;
   }}
   .an-diverg-pct {{
-    font-family: var(--pixel); font-size: 9px; color: var(--dim);
+    font-family: var(--pixel); font-size: 12px; color: var(--dim);
     white-space: nowrap; min-width: 28px; text-align: right;
   }}
   .an-diverg-delta {{
-    font-family: var(--pixel); font-size: 10px; text-align: right;
+    font-family: var(--pixel); font-size: 12px; text-align: right;
   }}
   /* Cards to acquire grid */
   .an-acq-grid {{
@@ -1045,9 +1045,9 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     padding: 48px 32px 96px; border-top: 2px solid var(--border);
     margin-top: 40px;
   }}
-  .an-field-eyebrow {{ font-family: var(--pixel); font-size: 11px; color: var(--pink); }}
+  .an-field-eyebrow {{ font-family: var(--pixel); font-size: 13px; color: var(--pink); }}
   .an-field-title {{ font-family: var(--font); font-size: 28px; font-weight: 700; margin: 6px 0 4px; }}
-  .an-field-subtitle {{ font-family: var(--pixel); font-size: 9px; color: var(--dim); margin-bottom: 24px; display: block; }}
+  .an-field-subtitle {{ font-family: var(--pixel); font-size: 12px; color: var(--dim); margin-bottom: 24px; display: block; }}
   .an-tier-row {{
     display: flex; gap: 18px; padding: 18px;
     border: 4px solid var(--border); box-shadow: 4px 4px 0 0 #0A0A0A;
@@ -1060,7 +1060,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     border: 2px solid white;
   }}
   .an-tier-badge .tier-letter {{ font-family: var(--font); font-size: 32px; font-weight: 700; line-height: 1; }}
-  .an-tier-badge .tier-sub {{ font-family: var(--pixel); font-size: 9px; }}
+  .an-tier-badge .tier-sub {{ font-family: var(--pixel); font-size: 12px; }}
   .an-tier-decks {{ display: flex; flex-wrap: wrap; gap: 12px; flex: 1; }}
   .an-tier-deck {{
     width: 110px; background: var(--bg-deep); border: 2px solid var(--border);
@@ -1073,9 +1073,9 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     width: 100%; height: 64px; object-fit: cover; display: block;
   }}
   .an-tier-deck .td-body {{ padding: 6px 8px; }}
-  .an-tier-deck .td-name {{ font-family: var(--font); font-size: 11px; margin-bottom: 4px; line-height: 1.2; }}
-  .an-tier-deck .td-wr {{ font-family: var(--pixel); font-size: 9px; }}
-  .an-tier-deck .td-meta {{ font-family: var(--pixel); font-size: 10px; color: var(--dim); }}
+  .an-tier-deck .td-name {{ font-family: var(--font); font-size: 13px; margin-bottom: 4px; line-height: 1.2; }}
+  .an-tier-deck .td-wr {{ font-family: var(--pixel); font-size: 12px; }}
+  .an-tier-deck .td-meta {{ font-family: var(--pixel); font-size: 12px; color: var(--dim); }}
 
   /* Deck picker overlay */
   #an-picker-overlay {{
@@ -1094,10 +1094,10 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     margin-bottom: 20px; padding-bottom: 16px; border-bottom: 2px solid var(--border);
   }}
   .an-picker-header h2 {{ font-family: var(--font); font-size: 24px; font-weight: 700; }}
-  .an-picker-sub {{ font-family: var(--pixel); font-size: 9px; color: var(--dim); margin-top: 4px; }}
+  .an-picker-sub {{ font-family: var(--pixel); font-size: 12px; color: var(--dim); margin-top: 4px; }}
   .an-picker-close {{
     background: var(--border); border: 2px solid var(--border); color: white;
-    font-family: var(--pixel); font-size: 9px; padding: 8px 14px; cursor: pointer;
+    font-family: var(--pixel); font-size: 12px; padding: 8px 14px; cursor: pointer;
   }}
   .an-picker-grid {{
     display: grid; grid-template-columns: repeat(5,1fr); gap: 14px;
@@ -1125,7 +1125,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .an-picker-hcard.hc-mid   {{ z-index: 3; }}
   .an-picker-hcard.hc-right {{ transform: rotate(6deg) translateY(8px); margin-left: -8px; z-index: 1; }}
   .an-picker-name {{ font-family: var(--font); font-size: 13px; text-align: center; line-height: 1.3; }}
-  .an-picker-meta {{ font-family: var(--pixel); font-size: 9px; color: var(--pink); }}
+  .an-picker-meta {{ font-family: var(--pixel); font-size: 12px; color: var(--pink); }}
 
   /* ── CATALOG tab ── */
   #catalog-filters {{
@@ -1154,12 +1154,12 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   }}
   .cat-type-btn:hover {{ box-shadow: 2px 2px 0 0 var(--border); transform: translate(2px,2px); }}
   .cat-type-btn.active {{ background: var(--border); color: var(--bg); box-shadow: 2px 2px 0 0 var(--border); transform: translate(2px,2px); }}
-  #cat-count {{ font-family: var(--font); font-size: 10px; color: var(--dim); margin-bottom: 16px; }}
+  #cat-count {{ font-family: var(--font); font-size: 12px; color: var(--dim); margin-bottom: 16px; }}
   #catalog-grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 16px; }}
   #cat-load-more {{
     display: block; margin: 28px auto 0;
     background: var(--border); border: 4px solid var(--border); color: var(--bg);
-    font-family: var(--font); font-size: 11px; padding: 14px 32px; cursor: pointer;
+    font-family: var(--font); font-size: 13px; padding: 14px 32px; cursor: pointer;
     letter-spacing: 1px; box-shadow: var(--shadow);
     transition: box-shadow .07s, transform .07s;
   }}
@@ -1170,7 +1170,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   #new-deck-btn {{
     width: 100%; margin-bottom: 4px; display: block;
     background: transparent; border: 2px dashed var(--border); color: var(--dim);
-    font-family: var(--font); font-size: 10px; padding: 14px 0; cursor: pointer;
+    font-family: var(--font); font-size: 12px; padding: 14px 0; cursor: pointer;
     letter-spacing: 1px; text-align: center;
     transition: border-color .12s, color .12s, background .12s;
   }}
@@ -1197,7 +1197,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   }}
   #nd-close {{
     background: none; border: 2px solid var(--bg); color: var(--bg); font-family: var(--font);
-    font-size: 10px; cursor: pointer; padding: 6px 12px;
+    font-size: 12px; cursor: pointer; padding: 6px 12px;
     transition: background .12s, color .12s;
   }}
   #nd-close:hover {{ background: var(--bg); color: var(--border); }}
@@ -1205,7 +1205,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     padding: 12px 18px; border-bottom: 2px solid var(--border);
     display: flex; align-items: center; gap: 10px; background: var(--panel);
   }}
-  #nd-name-row label {{ font-family: var(--font); font-size: 10px; color: var(--dim); white-space: nowrap; }}
+  #nd-name-row label {{ font-family: var(--font); font-size: 12px; color: var(--dim); white-space: nowrap; }}
   #nd-name {{
     flex: 1; background: var(--card-bg); border: 2px solid var(--border);
     color: var(--text); font-family: var(--mono); font-size: 13px; padding: 8px 10px; outline: none;
@@ -1233,10 +1233,10 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .nd-result-img {{ width: 30px; height: 42px; object-fit: contain; flex-shrink: 0; border: 1px solid #ccc; }}
   .nd-result-info {{ flex: 1; min-width: 0; }}
   .nd-result-name {{ font-family: var(--mono); font-size: 12px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-  .nd-result-sub  {{ font-family: var(--mono); font-size: 11px; color: var(--dim); margin-top: 2px; }}
+  .nd-result-sub  {{ font-family: var(--mono); font-size: 13px; color: var(--dim); margin-top: 2px; }}
   .nd-add-btn {{
     background: var(--border); border: 2px solid var(--border); color: var(--bg);
-    font-family: var(--font); font-size: 9px; padding: 6px 10px; cursor: pointer;
+    font-family: var(--font); font-size: 12px; padding: 6px 10px; cursor: pointer;
     flex-shrink: 0; box-shadow: var(--shadow-sm);
     transition: box-shadow .07s, transform .07s;
   }}
@@ -1244,17 +1244,17 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   #nd-draft-panel {{ display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }}
   #nd-draft-header {{
     padding: 10px 12px; border-bottom: 2px solid var(--border);
-    font-family: var(--font); font-size: 10px; color: var(--dim); display: flex; justify-content: space-between;
+    font-family: var(--font); font-size: 12px; color: var(--dim); display: flex; justify-content: space-between;
     background: var(--panel);
   }}
   #nd-draft-count {{ color: var(--text); }}
   #nd-draft-list {{ overflow-y: auto; flex: 1; padding: 6px; }}
   .nd-draft-item {{ display: flex; align-items: center; gap: 6px; padding: 6px; border-bottom: 2px solid var(--panel); }}
   .nd-draft-name {{ flex: 1; font-family: var(--mono); font-size: 12px; color: var(--text); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
-  .nd-draft-cnt  {{ font-family: var(--font); font-size: 9px; color: var(--text); min-width: 16px; text-align: center; }}
+  .nd-draft-cnt  {{ font-family: var(--font); font-size: 12px; color: var(--text); min-width: 16px; text-align: center; }}
   .nd-draft-btn  {{
     background: var(--border); border: 2px solid var(--border); color: var(--bg);
-    font-family: var(--font); font-size: 10px; width: 24px; height: 24px;
+    font-family: var(--font); font-size: 12px; width: 24px; height: 24px;
     cursor: pointer; padding: 0; line-height: 1;
     box-shadow: var(--shadow-sm); transition: box-shadow .07s, transform .07s; flex-shrink: 0;
   }}
@@ -1264,7 +1264,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     display: flex; gap: 10px; justify-content: flex-end; align-items: center;
     background: var(--panel);
   }}
-  #nd-err {{ font-family: var(--font); font-size: 10px; color: var(--red); flex: 1; }}
+  #nd-err {{ font-family: var(--font); font-size: 12px; color: var(--red); flex: 1; }}
   #nd-save-btn {{
     background: var(--pink); border: 2px solid var(--border); color: #fff;
     font-family: var(--font); font-size: 12px; padding: 12px 24px; cursor: pointer;
@@ -1292,10 +1292,10 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     letter-spacing: -1px;
   }}
   #boot-sub {{
-    font-family: var(--pixel); font-size: 10px; color: var(--pink);
+    font-family: var(--pixel); font-size: 12px; color: var(--pink);
     text-align: center; margin-top: -4px;
   }}
-  .boot-line {{ font-family: var(--pixel); font-size: 9px; color: var(--dim); margin-top: 4px; }}
+  .boot-line {{ font-family: var(--pixel); font-size: 12px; color: var(--dim); margin-top: 4px; }}
   #boot-bar-wrap {{
     width: 320px; height: 24px; border: 4px solid var(--border);
     background: var(--panel); padding: 4px; margin-top: 4px;
@@ -1349,11 +1349,11 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
       height: 60px; border-right: 2px solid var(--border);
     }}
     .tab-btn:last-child {{ border-right: none; }}
-    .tab-btn .nav-en {{ font-size: 11px; }}
+    .tab-btn .nav-en {{ font-size: 13px; }}
     .tab-btn .nav-jp {{ font-size: 6px; }}
     #nav-right {{ padding: 0 10px; gap: 8px; border-left: 2px solid var(--border); flex-shrink: 0; }}
     #total-label {{ display: none; }}
-    #save-btn {{ font-size: 10px; padding: 8px 12px; }}
+    #save-btn {{ font-size: 12px; padding: 8px 12px; }}
     /* Push scrollable content above the fixed bottom tab bar */
     .tab-pane {{ padding-bottom: 80px !important; }}
     #card-area {{ padding-bottom: 80px; }}
@@ -1366,7 +1366,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
 
     /* Page headers */
     .page-header h1 {{ font-size: 32px; }}
-    .page-header-jp {{ font-size: 9px; }}
+    .page-header-jp {{ font-size: 12px; }}
 
     /* Meta grid — 2 columns */
     .meta-grid {{ grid-template-columns: repeat(2, 1fr); gap: 12px; }}
@@ -1381,7 +1381,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     /* Analysis header */
     .an-header {{ padding: 24px 16px 16px; }}
     .an-headline {{ font-size: 28px; }}
-    .an-subtitle {{ font-size: 9px; }}
+    .an-subtitle {{ font-size: 12px; }}
 
     /* Analysis scoreboard — stack vertically */
     .an-scoreboard {{ grid-template-columns: 1fr; gap: 16px; padding: 20px 16px; }}
@@ -1425,7 +1425,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     .meta-grid {{ grid-template-columns: repeat(2, 1fr); gap: 8px; }}
     #card-grid {{ grid-template-columns: repeat(2, 1fr); gap: 8px; }}
     .tab-btn {{ min-width: 68px; padding: 0 6px; }}
-    .tab-btn .nav-en {{ font-size: 11px; }}
+    .tab-btn .nav-en {{ font-size: 13px; }}
     .page-header h1 {{ font-size: 26px; }}
     .an-headline {{ font-size: 22px; }}
     .an-scoreboard {{ padding: 14px 12px; }}
@@ -2875,7 +2875,7 @@ document.addEventListener('click', function(e) {{
   #disclaimer {{
     position: fixed; bottom: 0; left: 0; right: 0; z-index: 199;
     background: var(--bg); border-top: 2px solid var(--border);
-    font-family: var(--mono); font-size: 10px; color: var(--dim);
+    font-family: var(--mono); font-size: 12px; color: var(--dim);
     text-align: center; padding: 5px 16px; line-height: 1.4;
     pointer-events: none;
   }}
@@ -2884,7 +2884,7 @@ document.addEventListener('click', function(e) {{
   #card-area {{ padding-bottom: 48px; }}
   @media (max-width: 768px) {{
     /* On mobile sit above the fixed tab bar (60px) */
-    #disclaimer {{ bottom: 60px; font-size: 9px; padding: 4px 10px; }}
+    #disclaimer {{ bottom: 60px; font-size: 12px; padding: 4px 10px; }}
     .tab-pane {{ padding-bottom: 140px !important; }}
     #card-area {{ padding-bottom: 140px; }}
   }}
