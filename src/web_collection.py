@@ -1442,6 +1442,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
 
 </style>
 <script data-goatcounter="https://deyosa.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1375181015653535" crossorigin="anonymous"></script>
 </head>
 <body>
 
