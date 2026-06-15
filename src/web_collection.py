@@ -377,12 +377,9 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     min-width: 120px;
   }}
   .tab-btn:last-child {{ border-right: none; }}
-  .tab-btn .nav-en {{ font-family: var(--font); font-size: 18px; color: var(--text); font-weight: 700; }}
-  .tab-btn .nav-jp {{ font-family: var(--pixel); font-size: 10px; color: var(--dim); }}
-  .tab-btn:hover {{ background: rgba(0,0,0,.05); }}
-  .tab-btn.active {{ background: var(--border); }}
-  .tab-btn.active .nav-en {{ color: #fff; }}
-  .tab-btn.active .nav-jp {{ color: rgba(255,255,255,.55); }}
+  .tab-btn {{ font-family: var(--font); font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: 0.5px; }}
+  .tab-btn:hover {{ background: var(--border); color: #fff; }}
+  .tab-btn.active {{ background: var(--border); color: #fff; }}
   #nav-right {{
     display: flex; align-items: center; gap: 12px;
     padding: 0 20px; border-left: 4px solid var(--border); flex-shrink: 0;
@@ -1456,7 +1453,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     <circle cx="40" cy="40" r="5" fill="#0A0A0A"/>
   </svg>
   <div id="boot-title">PKMN.POCKET</div>
-  <div id="boot-sub">METAアナライザ</div>
+  <div id="boot-sub">META ANALYZER</div>
   <div class="boot-line">Loading card database...</div>
   <div id="boot-bar-wrap"><div id="boot-bar"></div></div>
 </div>
@@ -2325,15 +2322,14 @@ function anRenderRoot() {{
       <div class="an-header-eyebrow">
         <span class="an-route">// ROUTE 04</span>
         <div class="an-rule"></div>
-        <span class="an-badge">◆ ANALYSIS · 分析</span>
+        <span class="an-badge">◆ ANALYSIS</span>
       </div>
       <div class="an-headline">Pick your fighter.<span class="pink"> We do the math.</span></div>
-      <div class="an-subtitle">あなたの戦士を選べ・計算は任せろ</div>
     </div>
 
     <div class="an-scoreboard">
       <div class="an-score-card-wrap">
-        <div class="an-sc-above">あなたのデッキ — YOUR DECK</div>
+        <div class="an-sc-above">YOUR DECK</div>
         <div class="an-sc-body" onclick="anOpenPicker('your')">
           ${{anHandHtml(yourDeck)}}
           <div class="an-sc-tag">◀ TAP</div>
@@ -2356,7 +2352,7 @@ function anRenderRoot() {{
       </div>
 
       <div class="an-score-card-wrap right">
-        <div class="an-sc-above">敵のデッキ — META DECK</div>
+        <div class="an-sc-above">META DECK</div>
         <div class="an-sc-body" onclick="anOpenPicker('meta')">
           ${{anHandHtml(oppArch || {{}})}}
           <div class="an-sc-tag right">TAP ▶</div>
@@ -2368,7 +2364,7 @@ function anRenderRoot() {{
     </div>
 
     <div class="an-insight">
-      <div class="an-insight-lead">◆ READ ME · 読むべし</div>
+      <div class="an-insight-lead">◆ READ ME</div>
       <div class="an-insight-items">
         <div class="an-insight-item">Your <strong>${{ROLE_LABEL[worstRole]}}</strong> is dragging this matchup by ${{worstVal}}%.</div>
         <span class="an-insight-div">│</span>
