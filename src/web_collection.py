@@ -2078,16 +2078,30 @@ function anRenderRoot() {{
   }}
 
   const rawWr    = (MATCHUP_DATA[yourDeck.id] || {{}})[oppDeck.id];
-  const vi       = anVerdictInfo(rawWr);
-  const wrStr    = rawWr !== undefined ? (rawWr * 100).toFixed(1) + '%' : 'N/A';
 
   // ── Insight strip data ────────────────────────────────────────────────
   const ad = ANALYSIS_DATA.find(a => a.id === yourDeck.id || a.name === yourDeck.name) || {{}};
-  const attr = (ad && ad.attribution) || {{}};
+  const attr = Object.assign({{}}, (ad && ad.attribution) || {{}});
+  // For custom decks, estimate role attribution from regression coefficients
+  if (yourDeck.custom && REGRESSION && REGRESSION.coef) {{
+    AN_ROLES.forEach(r => {{ if (attr[r] === undefined) attr[r] = (REGRESSION.coef[r] || 0) * (yourFracs[r] || 0) / 100; }});
+  }}
   const worstRole = AN_ROLES.reduce((best, r) => (attr[r]||0) < (attr[best]||0) ? r : best, AN_ROLES[0]);
   const worstVal  = Math.abs(attr[worstRole] || 0).toFixed(1);
   const totalMissing = (ad && ad.total_missing) || 0;
-  const predWr = (ad && ad.predicted_wr) || '—';
+  let predWr = (ad && ad.predicted_wr !== undefined) ? ad.predicted_wr : null;
+  if (predWr === null && yourDeck.custom && REGRESSION && REGRESSION.coef) {{
+    let _wr = (REGRESSION.intercept || 0);
+    AN_ROLES.forEach(r => {{ _wr += (REGRESSION.coef[r] || 0) * (yourFracs[r] || 0) / 100; }});
+    predWr = parseFloat((_wr * 100).toFixed(1));
+  }}
+  predWr = predWr !== null ? predWr : '—';
+
+  // For custom decks: use model-predicted WR; for meta decks: use tournament matchup WR
+  const displayWr = yourDeck.custom ? (typeof predWr === 'number' ? predWr / 100 : undefined) : rawWr;
+  const vi      = anVerdictInfo(displayWr);
+  const wrStr   = typeof displayWr === 'number' ? (displayWr * 100).toFixed(1) + '%' : 'N/A';
+  const wrLabel = yourDeck.custom ? 'EST. WIN RATE · 推定勝率' : '➜ WIN RATE / 勝率 ←';
 
   // best opponent
   const myMatchups = MATCHUP_DATA[yourDeck.id] || {{}};
@@ -2302,13 +2316,13 @@ function anRenderRoot() {{
           <div class="an-sc-tag">◀ TAP</div>
         </div>
         <div class="an-sc-name">${{yourDeck.name}}</div>
-        <div class="an-sc-meta">META ${{(yourDeck.meta_share*100).toFixed(0)}}%</div>
+        <div class="an-sc-meta">${{yourDeck.custom ? 'CUSTOM DECK' : `META ${{(yourDeck.meta_share*100).toFixed(0)}}%`}}</div>
         <div class="an-sc-dna">${{anDnaSvg(yourFracs)}}</div>
       </div>
 
       <div class="an-verdict-core">
         <div class="an-verdict-sticker" style="background:${{vi.bgColor}};color:${{vi.color}}">${{vi.label}}</div>
-        <div class="an-verdict-label">➜ WIN RATE / 勝率 ←</div>
+        <div class="an-verdict-label">${{wrLabel}}</div>
         <div class="an-verdict-wr" style="color:${{vi.color}}">${{wrStr}}</div>
         <div class="an-verdict-r2">R² = ${{REGRESSION && REGRESSION.r2 !== undefined ? REGRESSION.r2 : '—'}} · MODEL FIT</div>
         <div class="an-verdict-dots">
@@ -2335,9 +2349,15 @@ function anRenderRoot() {{
       <div class="an-insight-items">
         <div class="an-insight-item">Your <strong>${{ROLE_LABEL[worstRole]}}</strong> is dragging this matchup by ${{worstVal}}%.</div>
         <span class="an-insight-div">│</span>
-        <div class="an-insight-item"><strong>Acquire ${{totalMissing}} card${{totalMissing!==1?'s':''}}</strong> → predicted WR ${{predWr}}%.</div>
+        ${{yourDeck.custom
+          ? `<div class="an-insight-item"><strong>Est. win rate:</strong> ${{predWr !== '—' ? predWr + '%' : '—'}} · Based on deck composition model</div>`
+          : `<div class="an-insight-item"><strong>Acquire ${{totalMissing}} card${{totalMissing!==1?'s':''}}</strong> → predicted WR ${{predWr}}%.</div>`
+        }}
         <span class="an-insight-div">│</span>
-        <div class="an-insight-item"><strong>Easiest matchup:</strong> ${{bestOppStr}}</div>
+        ${{yourDeck.custom
+          ? `<div class="an-insight-item"><strong>No matchup history</strong> · Select a meta deck to compare composition</div>`
+          : `<div class="an-insight-item"><strong>Easiest matchup:</strong> ${{bestOppStr}}</div>`
+        }}
       </div>
     </div>
 
@@ -2346,10 +2366,12 @@ function anRenderRoot() {{
         <div class="big">MATCHUP</div>
         <div class="small">NAVIGATOR<br>対戦相手選択</div>
       </div>
-      <div class="an-nav-pills">${{pillsHtml}}</div>
+      ${{yourDeck.custom
+        ? `<div class="an-nav-pills" style="align-items:center;padding:12px 0;font-size:11px;color:var(--dim)">⚠ No tournament data for custom decks · Matchup win rates unavailable · Select a meta deck above to compare deck DNA</div>`
+        : `<div class="an-nav-pills">${{pillsHtml}}</div>`
+      }}
       <div class="an-nav-right">
-        <div style="color:var(--green)">FAVORABLE ${{favStr}}</div>
-        <div>WEIGHTED WR ${{wwrStr}}</div>
+        ${{!yourDeck.custom ? `<div style="color:var(--green)">FAVORABLE ${{favStr}}</div><div>WEIGHTED WR ${{wwrStr}}</div>` : ''}}
         <label style="margin-left:12px;display:flex;align-items:center;font-size:12px;color:var(--dim)">
           <input id="agg-toggle" type="checkbox" onchange="anToggleAggregate()" style="margin-right:6px" ${{aggregateByName ? 'checked' : ''}}>Aggregate by name
           <span class="agg-tooltip" aria-hidden="true">?
@@ -2399,7 +2421,10 @@ function anRenderRoot() {{
       <div class="an-field-eyebrow">FIELD VIEW</div>
       <div class="an-field-title">FULL MATCHUP SWEEP</div>
       <span class="an-field-subtitle">全アーキタイプ対戦成績 — SORTED BY WIN RATE INTO TIERS</span>
-      ${{tierHtml || '<div style="font-family:var(--pixel);font-size:9px;color:var(--dim)">NO MATCHUP DATA</div>'}}
+      ${{yourDeck.custom
+        ? '<div style="font-family:var(--pixel);font-size:9px;color:var(--dim)">NO TOURNAMENT DATA · CUSTOM DECKS HAVE NO MATCHUP HISTORY</div>'
+        : (tierHtml || '<div style="font-family:var(--pixel);font-size:9px;color:var(--dim)">NO MATCHUP DATA</div>')
+      }}
     </div>`;
 }}
 
