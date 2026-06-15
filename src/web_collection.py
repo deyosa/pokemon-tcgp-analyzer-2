@@ -1951,6 +1951,19 @@ function roleFractions(cards) {{
   return counts;
 }}
 
+function deckCosineSimilarity(cardsA, cardsB) {{
+  const vA = {{}}, vB = {{}};
+  for (const c of (cardsA || [])) vA[c.id] = (vA[c.id] || 0) + (c.need || c.count || 1);
+  for (const c of (cardsB || [])) vB[c.id] = (vB[c.id] || 0) + (c.need || c.count || 1);
+  const ids = new Set([...Object.keys(vA), ...Object.keys(vB)]);
+  let dot = 0, magA = 0, magB = 0;
+  for (const id of ids) {{
+    const a = vA[id] || 0, b = vB[id] || 0;
+    dot += a * b; magA += a * a; magB += b * b;
+  }}
+  return magA && magB ? dot / (Math.sqrt(magA) * Math.sqrt(magB)) : 0;
+}}
+
 function anVerdictInfo(wr) {{
   if (wr === undefined || wr === null) return {{ label:'— NO DATA', color:'var(--dim)', bgColor:'#ccc' }};
   if (wr >= 0.55) return {{ label:'⬆ FAVORABLE',   color:'var(--green)', bgColor:'#E8F5E9' }};
@@ -2077,12 +2090,35 @@ function anRenderRoot() {{
     return;
   }}
 
-  const rawWr    = (MATCHUP_DATA[yourDeck.id] || {{}})[oppDeck.id];
+  // ── Similarity-based matchup estimation for custom decks ─────────────
+  let mostSimilarMeta = null;
+  let myMatchups;
+  if (yourDeck.custom) {{
+    const metaArchetypes = ARCHETYPES.filter(a => !a.custom);
+    const sims = metaArchetypes.map(a => ({{
+      id: a.id, name: a.name, sim: deckCosineSimilarity(yourDeck.cards, a.cards)
+    }})).sort((a, b) => b.sim - a.sim);
+    mostSimilarMeta = sims[0] || null;
+    const topN = sims.slice(0, 3).filter(s => s.sim > 0.05);
+    const estimated = {{}};
+    META_DATA.forEach(m => {{
+      let wSum = 0, wTot = 0;
+      for (const {{id, sim}} of topN) {{
+        const wr = (MATCHUP_DATA[id] || {{}})[m.id];
+        if (wr !== undefined) {{ wSum += wr * sim; wTot += sim; }}
+      }}
+      if (wTot > 0) estimated[m.id] = wSum / wTot;
+    }});
+    myMatchups = estimated;
+  }} else {{
+    myMatchups = MATCHUP_DATA[yourDeck.id] || {{}};
+  }}
+
+  const rawWr = myMatchups[oppDeck.id];
 
   // ── Insight strip data ────────────────────────────────────────────────
   const ad = ANALYSIS_DATA.find(a => a.id === yourDeck.id || a.name === yourDeck.name) || {{}};
   const attr = Object.assign({{}}, (ad && ad.attribution) || {{}});
-  // For custom decks, estimate role attribution from regression coefficients
   if (yourDeck.custom && REGRESSION && REGRESSION.coef) {{
     AN_ROLES.forEach(r => {{ if (attr[r] === undefined) attr[r] = (REGRESSION.coef[r] || 0) * (yourFracs[r] || 0) / 100; }});
   }}
@@ -2097,14 +2133,9 @@ function anRenderRoot() {{
   }}
   predWr = predWr !== null ? predWr : '—';
 
-  // For custom decks: use model-predicted WR; for meta decks: use tournament matchup WR
-  const displayWr = yourDeck.custom ? (typeof predWr === 'number' ? predWr / 100 : undefined) : rawWr;
-  const vi      = anVerdictInfo(displayWr);
-  const wrStr   = typeof displayWr === 'number' ? (displayWr * 100).toFixed(1) + '%' : 'N/A';
+  const vi      = anVerdictInfo(rawWr);
+  const wrStr   = rawWr !== undefined ? (rawWr * 100).toFixed(1) + '%' : 'N/A';
   const wrLabel = yourDeck.custom ? 'EST. WIN RATE · 推定勝率' : '➜ WIN RATE / 勝率 ←';
-
-  // best opponent
-  const myMatchups = MATCHUP_DATA[yourDeck.id] || {{}};
   let bestOpp = null, bestOppWr = -1;
   META_DATA.forEach(m => {{
     const w = myMatchups[m.id];
@@ -2350,14 +2381,11 @@ function anRenderRoot() {{
         <div class="an-insight-item">Your <strong>${{ROLE_LABEL[worstRole]}}</strong> is dragging this matchup by ${{worstVal}}%.</div>
         <span class="an-insight-div">│</span>
         ${{yourDeck.custom
-          ? `<div class="an-insight-item"><strong>Est. win rate:</strong> ${{predWr !== '—' ? predWr + '%' : '—'}} · Based on deck composition model</div>`
+          ? `<div class="an-insight-item"><strong>Closest meta deck:</strong> ${{mostSimilarMeta ? mostSimilarMeta.name + ' (' + (mostSimilarMeta.sim*100).toFixed(0) + '% similar)' : '—'}} · WRs estimated by similarity</div>`
           : `<div class="an-insight-item"><strong>Acquire ${{totalMissing}} card${{totalMissing!==1?'s':''}}</strong> → predicted WR ${{predWr}}%.</div>`
         }}
         <span class="an-insight-div">│</span>
-        ${{yourDeck.custom
-          ? `<div class="an-insight-item"><strong>No matchup history</strong> · Select a meta deck to compare composition</div>`
-          : `<div class="an-insight-item"><strong>Easiest matchup:</strong> ${{bestOppStr}}</div>`
-        }}
+        <div class="an-insight-item"><strong>Easiest matchup:</strong> ${{bestOppStr}}</div>
       </div>
     </div>
 
@@ -2366,12 +2394,10 @@ function anRenderRoot() {{
         <div class="big">MATCHUP</div>
         <div class="small">NAVIGATOR<br>対戦相手選択</div>
       </div>
-      ${{yourDeck.custom
-        ? `<div class="an-nav-pills" style="align-items:center;padding:12px 0;font-size:11px;color:var(--dim)">⚠ No tournament data for custom decks · Matchup win rates unavailable · Select a meta deck above to compare deck DNA</div>`
-        : `<div class="an-nav-pills">${{pillsHtml}}</div>`
-      }}
+      <div class="an-nav-pills">${{pillsHtml}}</div>
       <div class="an-nav-right">
-        ${{!yourDeck.custom ? `<div style="color:var(--green)">FAVORABLE ${{favStr}}</div><div>WEIGHTED WR ${{wwrStr}}</div>` : ''}}
+        <div style="color:var(--green)">FAVORABLE ${{favStr}}</div>
+        <div>WEIGHTED WR ${{wwrStr}}</div>
         <label style="margin-left:12px;display:flex;align-items:center;font-size:12px;color:var(--dim)">
           <input id="agg-toggle" type="checkbox" onchange="anToggleAggregate()" style="margin-right:6px" ${{aggregateByName ? 'checked' : ''}}>Aggregate by name
           <span class="agg-tooltip" aria-hidden="true">?
@@ -2421,10 +2447,7 @@ function anRenderRoot() {{
       <div class="an-field-eyebrow">FIELD VIEW</div>
       <div class="an-field-title">FULL MATCHUP SWEEP</div>
       <span class="an-field-subtitle">全アーキタイプ対戦成績 — SORTED BY WIN RATE INTO TIERS</span>
-      ${{yourDeck.custom
-        ? '<div style="font-family:var(--pixel);font-size:9px;color:var(--dim)">NO TOURNAMENT DATA · CUSTOM DECKS HAVE NO MATCHUP HISTORY</div>'
-        : (tierHtml || '<div style="font-family:var(--pixel);font-size:9px;color:var(--dim)">NO MATCHUP DATA</div>')
-      }}
+      ${{tierHtml || '<div style="font-family:var(--pixel);font-size:9px;color:var(--dim)">NO MATCHUP DATA</div>'}}
     </div>`;
 }}
 
