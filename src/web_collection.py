@@ -1738,7 +1738,7 @@ function renderMeta() {{
 </div>`;
     const areaCls = imgs.length === 1 ? 'arch-img-area single' : 'arch-img-area';
     const div = document.createElement('div');
-    const cardCls = arch.ewr >= 52 ? 'arch-card arch-card-hi' : arch.ewr < 48 ? 'arch-card arch-card-lo' : 'arch-card';
+    const cardCls = 'arch-card';
     div.className = cardCls;
     div.innerHTML = `
       <div class="${{areaCls}}">
