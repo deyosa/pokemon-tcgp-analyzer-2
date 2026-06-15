@@ -518,6 +518,10 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     background: var(--panel); border: 1px solid var(--border);
     padding: 2px 8px; color: var(--dim);
   }}
+  .page-subtitle .ps-hint {{
+    display: inline-block; margin-top: 4px; font-size: 10px;
+    color: var(--dim); font-style: italic;
+  }}
 
   /* ── Section label ── */
   .section-label {{
@@ -1523,6 +1527,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
         <div class="page-subtitle">
           Top archetypes ranked by expected win rate · Data from Limitless TCG
           <br><span class="ps-updated" id="meta-updated" data-built="{built_at}">⏱ Updated ...</span>
+          <br><span class="ps-hint">💡 Hover over a deck card to see its full card list</span>
         </div>
       </div>
       <div id="meta-search-wrap">
