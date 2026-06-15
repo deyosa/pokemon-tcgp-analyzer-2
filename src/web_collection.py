@@ -1788,13 +1788,17 @@ function renderMeta() {{
   filterMeta();
 }}
 
+function normalizeSearch(s) {{
+  return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+}}
+
 function filterMeta() {{
-  const q = (document.getElementById('meta-search-input').value || '').toLowerCase();
+  const q = normalizeSearch(document.getElementById('meta-search-input').value || '');
   const grid = document.getElementById('meta-grid');
   grid.querySelectorAll('.arch-card').forEach(card => {{
     const name = card.querySelector('.arch-name');
     if (!name) return;
-    card.style.display = (!q || name.textContent.toLowerCase().includes(q)) ? '' : 'none';
+    card.style.display = (!q || normalizeSearch(name.textContent).includes(q)) ? '' : 'none';
   }});
 }}
 
@@ -2529,9 +2533,9 @@ function closeNewDeck() {{
 }}
 
 function ndSearch() {{
-  const q = document.getElementById('nd-search').value.toLowerCase();
+  const q = normalizeSearch(document.getElementById('nd-search').value);
   const results = CATALOG_DATA
-    .filter(c => !q || c.name.toLowerCase().includes(q))
+    .filter(c => !q || normalizeSearch(c.name).includes(q))
     .slice(0, 40);
   const el = document.getElementById('nd-results');
   el.innerHTML = '';
@@ -2697,10 +2701,10 @@ function setCatType(t) {{
 }}
 
 function filterCatalog() {{
-  const query = (document.getElementById('cat-search').value || '').toLowerCase();
+  const query = normalizeSearch(document.getElementById('cat-search').value || '');
   const set   = document.getElementById('cat-set').value;
   catFiltered = CATALOG_DATA.filter(c =>
-    (!query  || c.name.toLowerCase().includes(query)) &&
+    (!query  || normalizeSearch(c.name).includes(query)) &&
     (!set    || c.set === set) &&
     (!catType || c.type === catType)
   );
