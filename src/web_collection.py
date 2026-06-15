@@ -3078,6 +3078,13 @@ def create_flask_app(
     def index():
         return Response(_get_html(), mimetype="text/html; charset=utf-8")
 
+    @app.get("/ads.txt")
+    def ads_txt():
+        _ads_path = Path(__file__).parent.parent / "ads.txt"
+        if _ads_path.exists():
+            return Response(_ads_path.read_text(), mimetype="text/plain")
+        abort(404)
+
     @app.get("/charts/<path:filename>")
     def charts(filename):
         fpath = (outputs_dir / filename).resolve()
