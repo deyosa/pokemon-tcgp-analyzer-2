@@ -278,6 +278,7 @@ def _prepare_page_data(
         "analysis": analysis_data,
         "catalog": catalog_list,
         "matchup": matchup_matrix or {},
+        "role_map": role_map or {},
         "regression": {
             "r2":        round(regression.r_squared, 3),
             "coef":      {r: round(regression.coef[r] * 100, 2) for r in _ROLES},
@@ -294,6 +295,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     analysis_json = json.dumps(page_data["analysis"])
     catalog_json = json.dumps(page_data.get("catalog", []))
     matchup_json = json.dumps(page_data.get("matchup", {}))
+    role_map_json = json.dumps(page_data.get("role_map", {}))
     regression_json = json.dumps(page_data.get("regression", {}))
 
     return f"""<!DOCTYPE html>
@@ -1642,6 +1644,7 @@ const META_DATA     = {meta_json};
 let   ANALYSIS_DATA = {analysis_json};
 const CATALOG_DATA  = {catalog_json};
 let   MATCHUP_DATA  = {matchup_json};
+const ROLE_MAP      = {role_map_json};
 let   REGRESSION    = {regression_json};
 let   collection    = JSON.parse(localStorage.getItem('pkmn_collection') || '{{}}');
 let   activeDeckIdx = -1;
@@ -1661,6 +1664,7 @@ let   aggregateByName = (localStorage.getItem('aggByName') === '1');
           id: c.id,
           name: cat ? cat.name : c.name || c.id,
           type: cat ? cat.type : 'Pokemon',
+          role: ROLE_MAP[c.id] || 'garnet',
           need: c.count, have: collection[c.id] || 0,
           img: cat ? cat.img : '',
         }};
