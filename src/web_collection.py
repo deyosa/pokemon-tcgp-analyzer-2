@@ -590,7 +590,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .arch-sticker {{
     display: inline-block;
     background: var(--gold); border: 2px solid var(--border);
-    font-family: var(--pixel); font-size: 7px; color: var(--text);
+    font-family: var(--pixel); font-size: 7px; color: #0A0A0A;
     padding: 4px 8px; box-shadow: 2px 2px 0 0 var(--border);
     margin-bottom: 8px;
   }}
