@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 import json
 import os
 import sqlite3
@@ -304,7 +304,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PKMN TCG POCKET // COLLECTION MANAGER</title>
-<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=JetBrains+Mono:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {{
     --bg:        #FBF3E4;
@@ -318,8 +318,8 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     --gold:      #F9C846;
     --red:       #CC2222;
     --dim:       #6B6660;
-    --font:      'DotGothic16', monospace;
-    --pixel:     'Press Start 2P', monospace;
+    --font:      'Space Grotesk', sans-serif;
+    --pixel:     'Space Mono', monospace;
     --mono:      'JetBrains Mono', monospace;
     --shadow:     4px 4px 0 0 #0A0A0A;
     --shadow-lg:  8px 8px 0 0 #0A0A0A;
@@ -364,7 +364,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     font-weight: 700; line-height: 1.2;
   }}
   #nav-logo-sub {{
-    font-family: var(--pixel); font-size: 7px; color: var(--dim); margin-top: 4px;
+    font-family: var(--pixel); font-size: 10px; color: var(--dim); margin-top: 4px;
   }}
   #nav-links {{ display: flex; flex: 1; align-items: stretch; }}
   .tab-btn {{
@@ -378,7 +378,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   }}
   .tab-btn:last-child {{ border-right: none; }}
   .tab-btn .nav-en {{ font-family: var(--font); font-size: 18px; color: var(--text); font-weight: 700; }}
-  .tab-btn .nav-jp {{ font-family: var(--pixel); font-size: 7px; color: var(--dim); }}
+  .tab-btn .nav-jp {{ font-family: var(--pixel); font-size: 10px; color: var(--dim); }}
   .tab-btn:hover {{ background: rgba(0,0,0,.05); }}
   .tab-btn.active {{ background: var(--border); }}
   .tab-btn.active .nav-en {{ color: #fff; }}
@@ -596,7 +596,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .arch-sticker {{
     display: inline-block;
     background: var(--gold); border: 2px solid var(--border);
-    font-family: var(--pixel); font-size: 7px; color: #0A0A0A;
+    font-family: var(--pixel); font-size: 10px; color: #0A0A0A;
     padding: 4px 8px; box-shadow: 2px 2px 0 0 var(--border);
     margin-bottom: 8px;
   }}
@@ -608,13 +608,13 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   }}
   .arch-stats {{ display: flex; align-items: flex-end; justify-content: space-between; }}
   .arch-share {{ font-family: var(--font); font-size: 28px; color: var(--pink); font-weight: 700; line-height: 1; }}
-  .arch-wr {{ font-family: var(--pixel); font-size: 8px; color: var(--dim); text-align: right; line-height: 2.2; }}
+  .arch-wr {{ font-family: var(--pixel); font-size: 10px; color: var(--dim); text-align: right; line-height: 2.2; }}
   .arch-card-hi {{ border-left: 8px solid var(--green) !important; }}
   .arch-card-lo {{ border-left: 8px solid var(--red) !important; }}
   .arch-owned-row {{ display: flex; align-items: center; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 2px solid var(--border); }}
   .arch-owned-pct {{ font-family: var(--mono); font-size: 10px; color: var(--dim); }}
-  .arch-buildable-yes {{ font-family: var(--pixel); font-size: 8px; color: var(--green); }}
-  .arch-buildable-no {{ font-family: var(--pixel); font-size: 8px; color: var(--red); }}
+  .arch-buildable-yes {{ font-family: var(--pixel); font-size: 10px; color: var(--green); }}
+  .arch-buildable-no {{ font-family: var(--pixel); font-size: 10px; color: var(--red); }}
 
   /* ── COLLECTION tab ── */
   #collection-pane {{
@@ -699,15 +699,15 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .card.partial {{ border-color: var(--gold); }}
   .card.missing {{ opacity: .55; }}
   .card-type-badge {{
-    font-family: var(--font); font-size: 8px; padding: 3px 8px;
+    font-family: var(--font); font-size: 10px; padding: 3px 8px;
     margin-bottom: 6px; display: inline-block; letter-spacing: 0.5px;
     border: 1px solid rgba(0,0,0,.2); color: var(--text);
   }}
   .type-Pokemon {{ background: #FFD9E6; }}
   .type-Trainer {{ background: #FFE5C2; }}
   .type-Energy  {{ background: #FFF5C2; }}
-  .card-name {{ font-family: var(--font); font-size: 8px; color: var(--text); margin-bottom: 8px; line-height: 1.6; min-height: 24px; word-break: break-word; }}
-  .need-label {{ font-family: var(--font); font-size: 8px; color: var(--dim); margin-bottom: 6px; }}
+  .card-name {{ font-family: var(--font); font-size: 10px; color: var(--text); margin-bottom: 8px; line-height: 1.6; min-height: 24px; word-break: break-word; }}
+  .need-label {{ font-family: var(--font); font-size: 10px; color: var(--dim); margin-bottom: 6px; }}
   .counter {{ display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px; }}
   .btn-counter {{
     background: var(--border); border: 2px solid var(--border); color: var(--bg);
@@ -874,7 +874,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     padding-right: 24px; flex-shrink: 0;
   }}
   .an-nav-label .big {{ font-family: var(--font); font-size: 14px; font-weight: 700; }}
-  .an-nav-label .small {{ font-family: var(--pixel); font-size: 8px; color: var(--dim); margin-top: 2px; }}
+  .an-nav-label .small {{ font-family: var(--pixel); font-size: 10px; color: var(--dim); margin-top: 2px; }}
   .an-nav-pills {{
     flex: 1; display: flex; gap: 8px; overflow-x: auto;
     scrollbar-width: thin;
@@ -951,13 +951,13 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   }}
   .an-comp-bar-fill {{ height: 100%; transition: width .4s ease; }}
   .an-comp-bar-label {{
-    font-family: var(--pixel); font-size: 8px; color: var(--dim); margin-top: 4px;
+    font-family: var(--pixel); font-size: 10px; color: var(--dim); margin-top: 4px;
   }}
   .an-role-attr {{
     font-family: var(--pixel); font-size: 13px; text-align: right; align-self: center;
   }}
   .an-role-attr-label {{
-    font-family: var(--pixel); font-size: 8px; color: var(--dim); text-align: right; align-self: center; line-height: 1.6;
+    font-family: var(--pixel); font-size: 10px; color: var(--dim); text-align: right; align-self: center; line-height: 1.6;
   }}
 
   /* Card list */
@@ -968,11 +968,11 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   }}
   .an-card-list-title {{ font-family: var(--pixel); font-size: 10px; flex: 1; }}
   .an-filter-badge {{
-    font-family: var(--pixel); font-size: 8px; color: var(--pink);
+    font-family: var(--pixel); font-size: 10px; color: var(--pink);
     border: 1px solid var(--pink); padding: 2px 6px;
   }}
   .an-clear-btn {{
-    font-family: var(--pixel); font-size: 8px; color: var(--dim);
+    font-family: var(--pixel); font-size: 10px; color: var(--dim);
     background: none; border: 1px solid var(--border); cursor: pointer; padding: 4px 8px;
   }}
   .an-acq-item {{
@@ -1015,7 +1015,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     gap: 8px; margin-bottom: 10px;
   }}
   .an-diverg-header span {{
-    font-family: var(--pixel); font-size: 8px; color: var(--dim);
+    font-family: var(--pixel); font-size: 10px; color: var(--dim);
   }}
   .an-diverg-row {{
     display: grid; grid-template-columns: 90px 1fr 1fr 64px;
@@ -1078,7 +1078,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   .an-tier-deck .td-body {{ padding: 6px 8px; }}
   .an-tier-deck .td-name {{ font-family: var(--font); font-size: 11px; margin-bottom: 4px; line-height: 1.2; }}
   .an-tier-deck .td-wr {{ font-family: var(--pixel); font-size: 9px; }}
-  .an-tier-deck .td-meta {{ font-family: var(--pixel); font-size: 7px; color: var(--dim); }}
+  .an-tier-deck .td-meta {{ font-family: var(--pixel); font-size: 10px; color: var(--dim); }}
 
   /* Deck picker overlay */
   #an-picker-overlay {{
@@ -1208,7 +1208,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     padding: 12px 18px; border-bottom: 2px solid var(--border);
     display: flex; align-items: center; gap: 10px; background: var(--panel);
   }}
-  #nd-name-row label {{ font-family: var(--font); font-size: 8px; color: var(--dim); white-space: nowrap; }}
+  #nd-name-row label {{ font-family: var(--font); font-size: 10px; color: var(--dim); white-space: nowrap; }}
   #nd-name {{
     flex: 1; background: var(--card-bg); border: 2px solid var(--border);
     color: var(--text); font-family: var(--mono); font-size: 13px; padding: 8px 10px; outline: none;
@@ -1247,7 +1247,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   #nd-draft-panel {{ display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }}
   #nd-draft-header {{
     padding: 10px 12px; border-bottom: 2px solid var(--border);
-    font-family: var(--font); font-size: 8px; color: var(--dim); display: flex; justify-content: space-between;
+    font-family: var(--font); font-size: 10px; color: var(--dim); display: flex; justify-content: space-between;
     background: var(--panel);
   }}
   #nd-draft-count {{ color: var(--text); }}
@@ -1267,7 +1267,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     display: flex; gap: 10px; justify-content: flex-end; align-items: center;
     background: var(--panel);
   }}
-  #nd-err {{ font-family: var(--font); font-size: 7px; color: var(--red); flex: 1; }}
+  #nd-err {{ font-family: var(--font); font-size: 10px; color: var(--red); flex: 1; }}
   #nd-save-btn {{
     background: var(--pink); border: 2px solid var(--border); color: #fff;
     font-family: var(--font); font-size: 12px; padding: 12px 24px; cursor: pointer;
