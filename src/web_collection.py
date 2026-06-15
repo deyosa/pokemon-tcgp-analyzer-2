@@ -941,6 +941,10 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     align-self: center;
   }}
   .an-role-badge.role-tech {{ color: var(--text); }}
+  .an-role-desc {{
+    font-family: var(--mono); font-size: 10px; color: var(--dim);
+    margin-top: 5px; line-height: 1.4;
+  }}
   .an-comp-bar-wrap {{
     background: var(--panel); height: 8px; border: 1px solid var(--border);
     align-self: center;
@@ -1930,6 +1934,13 @@ function adjust(cardId, need, delta) {{
 // ── ANALYSIS tab (Shoppu Fighter layout) ────────────────────────────────────
 const ROLE_ORDER = {{ win_condition:0, engine:1, staple:2, tech:3, garnet:4 }};
 const ROLE_LABEL = {{ win_condition:'WIN CON', engine:'ENGINE', staple:'STAPLE', tech:'TECH', garnet:'GARNET' }};
+const ROLE_DESC  = {{
+  win_condition: 'Primary attacker · 80+ dmg · archetype-specific',
+  engine:        'Core consistency · draw, search, acceleration · in 50%+ of decks',
+  staple:        'Widely used support · in 20–49% of decks',
+  tech:          'Situational pick · counters specific matchups · in 5–19% of decks',
+  garnet:        'Niche / rarely played · in <5% of meta decks',
+}};
 const ROLE_COLOR = {{
   win_condition: 'var(--pink)',
   engine:        'var(--blue)',
@@ -2199,6 +2210,7 @@ function anRenderRoot() {{
     return `<div class="an-role-row${{isActive ? ' active' : ''}}" onclick="anToggleRole('${{r}}')">
       <div>
         <span class="an-role-badge role-${{r}}" style="background:${{col}}">${{ROLE_LABEL[r]}}</span>
+        <div class="an-role-desc">${{ROLE_DESC[r]}}</div>
       </div>
       <div>
         <div class="an-comp-bar-wrap">
