@@ -1474,22 +1474,14 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
       </svg>
       <div>
         <div id="nav-logo-name">PKMN.POCKET</div>
-        <div id="nav-logo-sub">METAアナライザ・SHOPPU</div>
+        <div id="nav-logo-sub">META ANALYZER</div>
       </div>
     </div>
     <div id="nav-links">
-      <button class="tab-btn active" onclick="showTab('meta')">
-        <span class="nav-en">Meta</span><span class="nav-jp">メタ</span>
-      </button>
-      <button class="tab-btn" onclick="showTab('collection')">
-        <span class="nav-en">Collection</span><span class="nav-jp">コレクション</span>
-      </button>
-      <button class="tab-btn" onclick="showTab('catalog')">
-        <span class="nav-en">Catalog</span><span class="nav-jp">カタログ</span>
-      </button>
-      <button class="tab-btn" onclick="showTab('analysis')">
-        <span class="nav-en">Analysis</span><span class="nav-jp">分析・チャート</span>
-      </button>
+      <button class="tab-btn active" onclick="showTab('meta')">Meta</button>
+      <button class="tab-btn" onclick="showTab('collection')">Collection</button>
+      <button class="tab-btn" onclick="showTab('catalog')">Catalog</button>
+      <button class="tab-btn" onclick="showTab('analysis')">Analysis</button>
     </div>
     <div id="nav-right">
       <span id="total-label">♥ <span id="total-count">0</span></span>
@@ -1499,25 +1491,6 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     </div>
   </nav>
 
-  <!-- Marquee strip -->
-  <div id="marquee-strip">
-    <div id="marquee-inner">
-      <span class="mq-item"><span class="mq-slash">//</span> PKMN.POCKET</span>
-      <span class="mq-item"><span class="mq-slash">//</span> META ANALYZER</span>
-      <span class="mq-item"><span class="mq-slash">//</span> COMPETITIVE DECKS</span>
-      <span class="mq-item"><span class="mq-slash">//</span> COLLECTION MANAGER</span>
-      <span class="mq-item"><span class="mq-slash">//</span> LIMITLESS TCG API</span>
-      <span class="mq-item"><span class="mq-slash">//</span> WIN RATE ESTIMATOR</span>
-      <span class="mq-item"><span class="mq-slash">//</span> CARD ROLE CLASSIFIER</span>
-      <span class="mq-item"><span class="mq-slash">//</span> PKMN.POCKET</span>
-      <span class="mq-item"><span class="mq-slash">//</span> META ANALYZER</span>
-      <span class="mq-item"><span class="mq-slash">//</span> COMPETITIVE DECKS</span>
-      <span class="mq-item"><span class="mq-slash">//</span> COLLECTION MANAGER</span>
-      <span class="mq-item"><span class="mq-slash">//</span> LIMITLESS TCG API</span>
-      <span class="mq-item"><span class="mq-slash">//</span> WIN RATE ESTIMATOR</span>
-      <span class="mq-item"><span class="mq-slash">//</span> CARD ROLE CLASSIFIER</span>
-    </div>
-  </div>
 
   <!-- Support banner -->
   <div id="support-banner">
@@ -1531,7 +1504,6 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     <div class="tab-pane active" id="meta-pane">
       <div class="page-header">
         <h1>META</h1>
-        <div class="page-header-jp">メタアーキタイプ ランキング</div>
         <div class="page-subtitle">
           Top archetypes ranked by expected win rate · Data from Limitless TCG
           <br><span class="ps-updated" id="meta-updated" data-built="{built_at}">⏱ Updated ...</span>
@@ -1568,7 +1540,6 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
     <div class="tab-pane" id="catalog-pane">
       <div class="page-header">
         <h1>CATALOG</h1>
-        <div class="page-header-jp">全カードブラウザー</div>
         <div class="page-subtitle">Browse all Pokemon TCG Pocket cards · Mark owned copies to update your collection</div>
       </div>
       <div id="catalog-filters">
@@ -2079,22 +2050,21 @@ function anRenderRoot() {{
     root.innerHTML = `
       <div class="an-header">
         <div class="an-header-eyebrow">
-          <span class="an-route">// ROUTE 04</span>
+          <span class="an-route">// POCKET META</span>
           <div class="an-rule"></div>
-          <span class="an-badge">◆ ANALYSIS · 分析</span>
+          <span class="an-badge">◆ ANALYSIS</span>
         </div>
         <div class="an-headline">Pick your fighter.<span class="pink"> We do the math.</span></div>
-        <div class="an-subtitle">あなたの戦士を選べ・計算は任せろ</div>
         <div class="an-desc">Select your deck and an opponent archetype to calculate your expected win rate and matchup breakdown · Based on Limitless TCG tournament data</div>
       </div>
       <div class="an-scoreboard">
         <div class="an-score-card-wrap">
-          <div class="an-sc-above">あなたのデッキ — YOUR DECK</div>
+          <div class="an-sc-above">YOUR DECK</div>
           ${{yourSide0}}
         </div>
         <div class="an-verdict-core">
           <div class="an-verdict-sticker" style="background:${{vi0.bgColor}};color:${{vi0.color}}">${{vi0.label}}</div>
-          <div class="an-verdict-label">➜ WIN RATE / 勝率 ←</div>
+          <div class="an-verdict-label">➜ WIN RATE ←</div>
           <div class="an-verdict-wr" style="color:${{vi0.color}}">—</div>
           <div class="an-verdict-r2">SELECT BOTH DECKS</div>
           <div class="an-verdict-dots">
@@ -2104,7 +2074,7 @@ function anRenderRoot() {{
           </div>
         </div>
         <div class="an-score-card-wrap right">
-          <div class="an-sc-above">敵のデッキ — META DECK</div>
+          <div class="an-sc-above">META DECK</div>
           ${{oppSide0}}
         </div>
       </div>`;
@@ -2156,7 +2126,7 @@ function anRenderRoot() {{
 
   const vi      = anVerdictInfo(rawWr);
   const wrStr   = rawWr !== undefined ? (rawWr * 100).toFixed(1) + '%' : 'N/A';
-  const wrLabel = yourDeck.custom ? 'EST. WIN RATE · 推定勝率' : '➜ WIN RATE / 勝率 ←';
+  const wrLabel = yourDeck.custom ? 'EST. WIN RATE' : '➜ WIN RATE ←';
   let bestOpp = null, bestOppWr = -1;
   META_DATA.forEach(m => {{
     const w = myMatchups[m.id];
@@ -2414,7 +2384,7 @@ function anRenderRoot() {{
     <div class="an-nav">
       <div class="an-nav-label">
         <div class="big">MATCHUP</div>
-        <div class="small">NAVIGATOR<br>対戦相手選択</div>
+        <div class="small">NAVIGATOR</div>
       </div>
       <div class="an-nav-pills">${{pillsHtml}}</div>
       <div class="an-nav-right">
@@ -2433,17 +2403,16 @@ function anRenderRoot() {{
       <div class="an-panel">
         <div class="an-panel-eyebrow">ROLE DNA — COMPOSITION DIVERGENCE</div>
         <div class="an-panel-title">WHY</div>
-        <span class="an-panel-subtitle">なぜ</span>
         <div class="an-why-body">
           <div class="an-callout">
-            <div class="an-callout-title">THE BIG SWING · 差の核心</div>
+            <div class="an-callout-title">THE BIG SWING</div>
             ${{calloutHtml || '<span style="color:var(--dim);font-size:12px">No significant divergence.</span>'}}
           </div>
           <div class="an-diverg">
             <div class="an-diverg-header">
               <span></span>
-              <span>YOUR / あなた</span>
-              <span>META / 敵</span>
+              <span>YOUR DECK</span>
+              <span>META DECK</span>
               <span style="text-align:right">Δ</span>
             </div>
             ${{divergRowsHtml}}
@@ -2454,7 +2423,6 @@ function anRenderRoot() {{
       <div class="an-panel">
         <div class="an-panel-eyebrow">HOW TO WIN THIS MATCHUP</div>
         <div class="an-panel-title">CLOSE THE GAP</div>
-        <span class="an-panel-subtitle">差を埋めよ</span>
         ${{roleRowsHtml}}
         <div class="an-card-list-header">
           <div class="an-card-list-title">DECK LIST (${{allCards.length}})${{totalMissingCount ? ` · <span style="color:var(--red)">${{totalMissingCount}} MISSING</span>` : ' · <span style="color:var(--green)">✓ COMPLETE</span>'}}</div>
@@ -2468,7 +2436,7 @@ function anRenderRoot() {{
     <div class="an-field">
       <div class="an-field-eyebrow">FIELD VIEW</div>
       <div class="an-field-title">FULL MATCHUP SWEEP</div>
-      <span class="an-field-subtitle">全アーキタイプ対戦成績 — SORTED BY WIN RATE INTO TIERS</span>
+      <span class="an-field-subtitle">SORTED BY WIN RATE INTO TIERS</span>
       ${{tierHtml || '<div style="font-family:var(--pixel);font-size:9px;color:var(--dim)">NO MATCHUP DATA</div>'}}
     </div>`;
 }}
