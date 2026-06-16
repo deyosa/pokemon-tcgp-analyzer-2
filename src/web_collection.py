@@ -1349,8 +1349,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
       height: 60px; border-right: 2px solid var(--border);
     }}
     .tab-btn:last-child {{ border-right: none; }}
-    .tab-btn .nav-en {{ font-size: 13px; }}
-    .tab-btn .nav-jp {{ font-size: 6px; }}
+    .tab-btn {{ font-size: 13px; }}
     #nav-right {{ padding: 0 10px; gap: 8px; border-left: 2px solid var(--border); flex-shrink: 0; }}
     #total-label {{ display: none; }}
     #save-btn {{ font-size: 12px; padding: 8px 12px; }}
@@ -1370,7 +1369,12 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
 
     /* Meta grid — 2 columns */
     .meta-grid {{ grid-template-columns: repeat(2, 1fr); gap: 12px; }}
-    .arch-img-area {{ height: 160px; }}
+    .arch-img-area {{ height: 140px; }}
+    .arch-body {{ padding: 10px 12px; }}
+    .arch-share {{ font-size: 22px; }}
+    .arch-wr {{ font-size: 12px; line-height: 1.8; }}
+    .arch-name {{ font-size: 12px; margin-bottom: 6px; }}
+    .arch-sticker {{ font-size: 12px; margin-bottom: 6px; padding: 3px 6px; }}
 
     /* Collection — stack vertically */
     #collection-pane {{ grid-template-columns: 1fr; grid-template-rows: 260px 1fr; }}
@@ -1424,8 +1428,7 @@ def _build_html(page_data: dict, my_cards: dict) -> str:  # noqa: E501
   @media (max-width: 480px) {{
     .meta-grid {{ grid-template-columns: repeat(2, 1fr); gap: 8px; }}
     #card-grid {{ grid-template-columns: repeat(2, 1fr); gap: 8px; }}
-    .tab-btn {{ min-width: 68px; padding: 0 6px; }}
-    .tab-btn .nav-en {{ font-size: 13px; }}
+    .tab-btn {{ min-width: 68px; padding: 0 6px; font-size: 12px; }}
     .page-header h1 {{ font-size: 26px; }}
     .an-headline {{ font-size: 22px; }}
     .an-scoreboard {{ padding: 14px 12px; }}
